@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import facade from "./ApiFacade";
 import AdminHome from "./routes/AdminHome";
 import UserHome from "./routes/UserHome";
+import AdminWorkouts from "./routes/AdminWorkouts";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -28,7 +29,7 @@ function App() {
         <Routes>
           {facade.loggedIn() && role === "admin" && (
             <Route
-              path='/'
+              path="/"
               element={
                 <AdminHome username={username} setRole={setRole} role={role} />
               }
@@ -36,17 +37,18 @@ function App() {
           )}
           {facade.loggedIn() && role === "user" && (
             <Route
-              path='/'
+              path="/"
               element={<UserHome username={username} role={role} />}
             />
           )}
           {!facade.loggedIn() && (
             <Route
-              path='/'
+              path="/"
               element={<Home username={username} role={role} />}
             />
           )}
-          <Route path='/login' element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/workouts" element={<AdminWorkouts />} />
         </Routes>
       </Layout>
     </Fragment>

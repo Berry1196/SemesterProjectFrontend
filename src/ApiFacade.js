@@ -51,6 +51,16 @@ function apiFacade() {
     const data = await fetch(url, options);
     return data.json();
   }
+
+  async function fetchWorkouts(muscle) {
+    const options = makeOptions("GET", true);
+    const data = await fetch(
+      "http://localhost:8080/api/workouts/" + muscle,
+      options
+    );
+    return data.json();
+  }
+
   function deleteCar(id) {
     const options = makeOptions("DELETE", true);
     return fetch(URL + "/api/cars/" + id, options);
@@ -105,6 +115,7 @@ function apiFacade() {
     createNewCar,
     deleteCar,
     createJoke,
+    fetchWorkouts,
   };
 }
 const facade = apiFacade();

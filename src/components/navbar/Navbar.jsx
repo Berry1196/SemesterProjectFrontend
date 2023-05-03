@@ -15,6 +15,7 @@ const navigation = [
   { name: "Home", href: "/", current: false },
   { name: "About", href: "/about", current: false },
   { name: "Contact", href: "/contact", current: false },
+  { name: "Workouts", href: "/workouts", current: false },
 ];
 
 export default function Navbar({ username, role }) {
@@ -27,17 +28,17 @@ export default function Navbar({ username, role }) {
   });
 
   return (
-    <Disclosure as='nav' className='bg-gray-800'>
+    <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
         <>
-          <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-            <div className='flex h-16 items-center justify-between'>
-              <div className='flex items-center'>
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center justify-between">
+              <div className="flex items-center">
                 <NavLogo />
                 <DesktopNavMenu navigation={navigation} />
               </div>
               {facade.loggedIn() ? (
-                <div className='flex gap-6'>
+                <div className="flex gap-6">
                   <RoleButton role={role} />
                   <UsernameButton username={username} />
                   <LogOutButton />
