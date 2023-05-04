@@ -9,6 +9,7 @@ import LogOutButton from "./LogOutButton";
 import facade from "../../ApiFacade";
 import UsernameButton from "./UsernameButton";
 import RoleButton from "./RoleButton";
+import SignUpButton from "./SignUpButton";
 
 const navigation = [
   { name: "Home", href: "/", current: false },
@@ -43,7 +44,10 @@ export default function Navbar({ username, role }) {
                   <LogOutButton />
                 </div>
               ) : (
-                <LogInButton />
+                <div className="flex gap-6">
+                  <SignUpButton />
+                  <LogInButton />
+                </div>
               )}
             </div>
             <NavHamburgerButton open={open} />
