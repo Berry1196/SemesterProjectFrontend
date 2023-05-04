@@ -6,9 +6,9 @@ import Layout from "./components/Layout";
 import "./index.css";
 import { useEffect } from "react";
 import facade from "./ApiFacade";
-import AdminHome from "./routes/AdminHome";
-import UserHome from "./routes/UserHome";
-import AdminWorkouts from "./routes/AdminWorkouts";
+import AdminHome from "./routes/admin/AdminHome";
+import UserHome from "./routes/user/UserHome";
+import CreateNewWorkout from "./routes/admin/CreateNewWorkout";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -27,28 +27,11 @@ function App() {
     <Fragment>
       <Layout username={username} role={role}>
         <Routes>
-          {facade.loggedIn() && role === "admin" && (
-            <Route
-              path="/"
-              element={
-                <AdminHome username={username} setRole={setRole} role={role} />
-              }
-            />
-          )}
-          {facade.loggedIn() && role === "user" && (
-            <Route
-              path="/"
-              element={<UserHome username={username} role={role} />}
-            />
-          )}
-          {!facade.loggedIn() && (
-            <Route
-              path="/"
-              element={<Home username={username} role={role} />}
-            />
-          )}
+          {facade.loggedIn() && role === "admin" && <Route path="/" element={<AdminHome username={username} setRole={setRole} role={role} />} />}
+          {facade.loggedIn() && role === "user" && <Route path="/" element={<UserHome username={username} role={role} />} />}
+          {!facade.loggedIn() && <Route path="/" element={<Home username={username} role={role} />} />}
           <Route path="/login" element={<Login />} />
-          <Route path="/workouts" element={<AdminWorkouts />} />
+          {facade.loggedIn() && role === "admin" && <Route path="/create" element={<CreateNewWorkout />} />}
         </Routes>
       </Layout>
     </Fragment>

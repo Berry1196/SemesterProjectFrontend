@@ -7,7 +7,6 @@ import MobileNavMenu from "./MobileNavMenu";
 import LogInButton from "./LogInButton";
 import LogOutButton from "./LogOutButton";
 import facade from "../../ApiFacade";
-import { useEffect, useState } from "react";
 import UsernameButton from "./UsernameButton";
 import RoleButton from "./RoleButton";
 
@@ -15,7 +14,7 @@ const navigation = [
   { name: "Home", href: "/", current: false },
   { name: "About", href: "/about", current: false },
   { name: "Contact", href: "/contact", current: false },
-  { name: "Workouts", href: "/workouts", current: false },
+  { name: "Create workout", href: "/create", current: false },
 ];
 
 export default function Navbar({ username, role }) {

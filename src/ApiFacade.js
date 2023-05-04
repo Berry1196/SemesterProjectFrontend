@@ -52,12 +52,9 @@ function apiFacade() {
     return data.json();
   }
 
-  async function fetchWorkouts(muscle) {
+  async function fetchExercises(muscle) {
     const options = makeOptions("GET", true);
-    const data = await fetch(
-      "http://localhost:8080/api/workouts/" + muscle,
-      options
-    );
+    const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
     return data.json();
   }
 
@@ -115,7 +112,7 @@ function apiFacade() {
     createNewCar,
     deleteCar,
     createJoke,
-    fetchWorkouts,
+    fetchExercises,
   };
 }
 const facade = apiFacade();

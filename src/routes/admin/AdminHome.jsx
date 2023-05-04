@@ -1,14 +1,9 @@
 import React, { useEffect } from "react";
-import facade from "../ApiFacade";
+import facade from "../../ApiFacade";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  LinkIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
+import { LinkIcon, PlusIcon, QuestionMarkCircleIcon, TrashIcon } from "@heroicons/react/20/solid";
 
 const AdminHome = ({ username, role, setRole }) => {
   const [cars, setCars] = useState([]);
@@ -46,13 +41,8 @@ const AdminHome = ({ username, role, setRole }) => {
     <div>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">
-            Users
-          </h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all the users in your account including their name, title,
-            email and role.
-          </p>
+          <h1 className="text-base font-semibold leading-6 text-gray-900">Users</h1>
+          <p className="mt-2 text-sm text-gray-700">A list of all the users in your account including their name, title, email and role.</p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
@@ -70,34 +60,19 @@ const AdminHome = ({ username, role, setRole }) => {
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
-                  <th
-                    scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                  >
+                  <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                     Name
                   </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     Brand
                   </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     Model
                   </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     Numberplate
                   </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     Delete
                   </th>
                 </tr>
@@ -105,28 +80,17 @@ const AdminHome = ({ username, role, setRole }) => {
               <tbody className="divide-y divide-gray-200">
                 {cars.map((car) => (
                   <tr key={car.id}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      User
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {car.brand}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {car.model}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {car.numberPlate}
-                    </td>
+                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">User</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{car.brand}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{car.model}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{car.numberPlate}</td>
                     <td className="whitespace-nowrrap px-3 py-4 text-sm text-gray-500">
                       <button
                         type="button"
                         className="inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         onClick={() => handleDelete(car.id)}
                       >
-                        <TrashIcon
-                          className="-ml-0.5 h-5 w-5"
-                          aria-hidden="true"
-                        />
+                        <TrashIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
                         Button text
                       </button>
                     </td>
@@ -155,16 +119,11 @@ const AdminHome = ({ username, role, setRole }) => {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                    <form
-                      className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl"
-                      onSubmit={onSubmit}
-                    >
+                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onSubmit={onSubmit}>
                       <div className="h-0 flex-1 overflow-y-auto">
                         <div className="bg-indigo-700 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
-                            <Dialog.Title className="text-base font-semibold leading-6 text-white">
-                              New Project
-                            </Dialog.Title>
+                            <Dialog.Title className="text-base font-semibold leading-6 text-white">New Project</Dialog.Title>
                             <div className="ml-3 flex h-7 items-center">
                               <button
                                 type="button"
@@ -172,28 +131,19 @@ const AdminHome = ({ username, role, setRole }) => {
                                 onClick={() => setOpen(false)}
                               >
                                 <span className="sr-only">Close panel</span>
-                                <XMarkIcon
-                                  className="h-6 w-6"
-                                  aria-hidden="true"
-                                />
+                                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                               </button>
                             </div>
                           </div>
                           <div className="mt-1">
-                            <p className="text-sm text-indigo-300">
-                              Get started by filling in the information below to
-                              create your new project.
-                            </p>
+                            <p className="text-sm text-indigo-300">Get started by filling in the information below to create your new project.</p>
                           </div>
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
                           <div className="divide-y divide-gray-200 px-4 sm:px-6">
                             <div className="space-y-6 pb-5 pt-6">
                               <div>
-                                <label
-                                  htmlFor="project-name"
-                                  className="block text-sm font-medium leading-6 text-gray-900"
-                                >
+                                <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
                                   Brand
                                 </label>
                                 <div className="mt-2">
@@ -208,10 +158,7 @@ const AdminHome = ({ username, role, setRole }) => {
                                 </div>
                               </div>
                               <div>
-                                <label
-                                  htmlFor="project-name"
-                                  className="block text-sm font-medium leading-6 text-gray-900"
-                                >
+                                <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
                                   Model
                                 </label>
                                 <div className="mt-2">
@@ -226,10 +173,7 @@ const AdminHome = ({ username, role, setRole }) => {
                                 </div>
                               </div>
                               <div>
-                                <label
-                                  htmlFor="project-name"
-                                  className="block text-sm font-medium leading-6 text-gray-900"
-                                >
+                                <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
                                   Numberplate
                                 </label>
                                 <div className="mt-2">
