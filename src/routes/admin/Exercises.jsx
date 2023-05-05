@@ -1,5 +1,5 @@
 import facade from "../../ApiFacade";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
@@ -7,8 +7,8 @@ import axios from "axios";
 
 export default function Exercises() {
   const [input, setInput] = useState("");
+  const [muscles, setMuscles] = useState("");
   const [image, setImage] = useState("");
-  const [muscles, setMuscles] = useState(["Chest", "Back"]);
   const [exercises, setExercises] = useState([
     {
       name: "Bench Press",
@@ -27,28 +27,9 @@ export default function Exercises() {
   ]);
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    facade.fetchExercises(input).then((data) => {
-      setExercises(data);
-    });
-  };
-
-  async function generatePhoto() {
-    axios
-      .get(`https://muscle-group-image-generator.p.rapidapi.com/getImage?muscleGroups=chest`, {
-        headers: {
-          "X-RapidAPI-Key": "04cb178b04msh880aff6d34465f7p118339jsn457ca14b4907",
-          "X-RapidAPI-Host": "muscle-group-image-generator.p.rapidapi.com",
-        },
-        responseType: "arraybuffer",
-      })
-      .then((response) => {
-        const imageFile = new Blob([response.data]);
-        const imageUrl = URL.createObjectURL(imageFile);
-        setImage(imageUrl);
-        console.log(imageUrl);
-      });
+  async function handleGeneratePhoto(muscles) {
+    const imageUrl = await facade.generatePhoto(muscles);
+    setImage(imageUrl);
   }
 
   const team = [
@@ -104,7 +85,7 @@ export default function Exercises() {
           <button
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={generatePhoto}
+            onClick={() => handleGeneratePhoto("chest")}
           >
             Add exercise
           </button>
@@ -364,7 +345,25 @@ export default function Exercises() {
           </div>
         </Dialog>
       </Transition.Root>
-      <img src={image} alt={`Image of ${muscles.join(",")}`} />
+
+      <div className="flex flex-col gap-4 bg-gray-200 mt-10 w-1/2 p-4">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            onChange={(event) => setMuscles(event.target.value)}
+            className="ring-1 ring-gray-300 ring-inset rounded text-sm px-2 py-1 w-full focus:ring-2 focus:ring-blue-600 focus:outline-none"
+            placeholder="Input muscle groups (seperated by comma)"
+          />
+          <button
+            type="button"
+            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+            onClick={() => handleGeneratePhoto(muscles)}
+          >
+            Generate
+          </button>
+        </div>
+        {image != "" && <img src={image} alt={"something"} className="" />}
+      </div>
     </Fragment>
   );
 }

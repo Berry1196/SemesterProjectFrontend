@@ -1,5 +1,3 @@
-const URL = "http://localhost:8080";
-
 function apiFacade() {
   const setToken = (token) => {
     localStorage.setItem("jwtToken", token);
@@ -21,58 +19,48 @@ function apiFacade() {
       username: username,
       password: password,
     });
-    const data = await fetch(URL + "/api/login", options);
+    const data = await fetch("http://localhost:8080/api/login", options);
     const res = await data.json();
     return res;
   }
   function createNewCar(car) {
     const options = makeOptions("POST", true, car);
-    return fetch(URL + "/api/cars", options);
+    return fetch(URL + "http://localhost:8080/api/cars", options);
   }
   function createJoke(joke) {
     const options = makeOptions("POST", true, joke);
-    return fetch(URL + "/api/cars/jokes", options);
+    return fetch(URL + "http://localhost:8080/api/cars/jokes", options);
   }
   //Create user fucntion
   async function createUser(user) {
     const options = makeOptions("POST", true, user);
-    const data = await fetch(URL + "/api/signup", options);
+    const data = await fetch(URL + "http://localhost:8080/api/signup", options);
     const res = await data.json();
     return res;
   }
 
   // create muscle photo
-  async function generateMusclePhoto(muscles) {
-    const url = `https://muscle-group-image-generator.p.rapidapi.com/getImage?muscleGroups=${muscles.join(",")}`;
-    const options = {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": "04cb178b04msh880aff6d34465f7p118339jsn457ca14b4907",
-        "X-RapidAPI-Host": "muscle-group-image-generator.p.rapidapi.com",
-      },
-    };
-
-    try {
-      const response = await fetch(url, options);
-
-      const imageFile = new Blob([response.data]);
-      const imageUrl = URL.createObjectURL(imageFile);
-      console.log(result);
-    } catch (error) {
-      console.error(error);
-    }
+  async function generatePhoto(muscles) {
+    const data = await fetch("http://localhost:8080/api/workouts/photo", {
+      method: "POST",
+      body: muscles,
+    });
+    const blob = await data.blob();
+    const imageFile = new Blob([blob]);
+    const imageUrl = URL.createObjectURL(imageFile);
+    return imageUrl;
   }
 
   // fetch data and catch possible errors
   async function fetchAdminData() {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "/api/info/admin", options);
+    const data = await fetch(URL + "http://localhost:8080/api/info/admin", options);
     return data.json();
   }
 
   async function fetchUserData() {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "/api/info/user", options);
+    const data = await fetch(URL + "http://localhost:8080/api/info/user", options);
     return data.json();
   }
   async function fetchData(url) {
@@ -89,7 +77,7 @@ function apiFacade() {
 
   function deleteCar(id) {
     const options = makeOptions("DELETE", true);
-    return fetch(URL + "/api/cars/" + id, options);
+    return fetch(URL + "http://localhost:8080/api/cars/" + id, options);
   }
 
   const makeOptions = (method, addToken, body) => {
@@ -143,7 +131,7 @@ function apiFacade() {
     createJoke,
     fetchExercises,
     createUser,
-    generateMusclePhoto,
+    generatePhoto,
   };
 }
 const facade = apiFacade();
