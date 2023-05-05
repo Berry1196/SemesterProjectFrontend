@@ -13,8 +13,6 @@ import SignUpButton from "./SignUpButton";
 
 const navigation = [
   { name: "Home", href: "/", current: false },
-  { name: "About", href: "/about", current: false },
-  { name: "Contact", href: "/contact", current: false },
   { name: "Exercises", href: "/exercises", current: false },
 ];
 
