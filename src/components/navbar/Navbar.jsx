@@ -15,7 +15,7 @@ const navigation = [
   { name: "Home", href: "/", current: false },
   { name: "About", href: "/about", current: false },
   { name: "Contact", href: "/contact", current: false },
-  { name: "Create workout", href: "/create", current: false },
+  { name: "Exercises", href: "/exercises", current: false },
 ];
 
 export default function Navbar({ username, role }) {
