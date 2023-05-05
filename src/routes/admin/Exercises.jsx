@@ -3,7 +3,6 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
-import axios from "axios";
 
 export default function Exercises() {
   const [input, setInput] = useState("");
@@ -85,7 +84,7 @@ export default function Exercises() {
           <button
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={() => handleGeneratePhoto("chest")}
+            onClick={() => setOpen(true)}
           >
             Add exercise
           </button>
