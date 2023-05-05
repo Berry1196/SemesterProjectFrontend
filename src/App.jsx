@@ -8,9 +8,9 @@ import { useEffect } from "react";
 import facade from "./ApiFacade";
 import AdminHome from "./routes/admin/AdminHome";
 import UserHome from "./routes/user/UserHome";
-import CreateNewWorkout from "./routes/admin/CreateNewWorkout";
-import SignUpButton from "./components/navbar/SignUpButton";
 import CreateUser from "./routes/CreateUser";
+import Exercises from "./routes/admin/Exercises";
+import MusclePhoto from "./routes/admin/MusclePhoto";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -34,7 +34,8 @@ function App() {
           {!facade.loggedIn() && <Route path="/" element={<Home username={username} role={role} />} />}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
-          {facade.loggedIn() && role === "admin" && <Route path="/create" element={<CreateNewWorkout />} />}
+          {facade.loggedIn() && role === "admin" && <Route path="/exercises" element={<Exercises />} />}
+          <Route path="musclephoto" element={<MusclePhoto />} />
         </Routes>
       </Layout>
     </Fragment>

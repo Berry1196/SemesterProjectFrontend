@@ -40,6 +40,29 @@ function apiFacade() {
     const res = await data.json();
     return res;
   }
+
+  // create muscle photo
+  async function generateMusclePhoto(muscles) {
+    const url = `https://muscle-group-image-generator.p.rapidapi.com/getImage?muscleGroups=${muscles.join(",")}`;
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "04cb178b04msh880aff6d34465f7p118339jsn457ca14b4907",
+        "X-RapidAPI-Host": "muscle-group-image-generator.p.rapidapi.com",
+      },
+    };
+
+    try {
+      const response = await fetch(url, options);
+
+      const imageFile = new Blob([response.data]);
+      const imageUrl = URL.createObjectURL(imageFile);
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   // fetch data and catch possible errors
   async function fetchAdminData() {
     const options = makeOptions("GET", true);
@@ -120,6 +143,7 @@ function apiFacade() {
     createJoke,
     fetchExercises,
     createUser,
+    generateMusclePhoto,
   };
 }
 const facade = apiFacade();
