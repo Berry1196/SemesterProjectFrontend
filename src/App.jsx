@@ -35,7 +35,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
           {facade.loggedIn() && role === "admin" && <Route path="/exercises" element={<Exercises />} />}
-          <Route path="musclephoto" element={<MusclePhoto />} />
         </Routes>
       </Layout>
     </Fragment>

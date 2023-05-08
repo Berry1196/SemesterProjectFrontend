@@ -19,8 +19,7 @@ function apiFacade() {
       username: username,
       password: password,
     });
-    const data = await fetch("http://berrywebsite.dk/api/login", options);
-    //const data = await fetch("http://localhost:8080/api/login", options);
+    const data = await fetch("http://localhost:8080/api/login", options);
     const res = await data.json();
     return res;
   }
@@ -49,7 +48,6 @@ function apiFacade() {
     const blob = await data.blob();
     const imageFile = new Blob([blob]);
     const imageUrl = URL.createObjectURL(imageFile);
-    console.log(muscles)
     return imageUrl;
   }
 
