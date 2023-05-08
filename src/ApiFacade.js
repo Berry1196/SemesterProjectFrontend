@@ -25,16 +25,16 @@ function apiFacade() {
   }
   function createNewCar(car) {
     const options = makeOptions("POST", true, car);
-    return fetch(URL + "http://localhost:8080/api/cars", options);
+    return fetch("http://localhost:8080/api/cars", options);
   }
   function createJoke(joke) {
     const options = makeOptions("POST", true, joke);
-    return fetch(URL + "http://localhost:8080/api/cars/jokes", options);
+    return fetch("http://localhost:8080/api/cars/jokes", options);
   }
   //Create user fucntion
   async function createUser(user) {
     const options = makeOptions("POST", true, user);
-    const data = await fetch(URL + "http://localhost:8080/api/signup", options);
+    const data = await fetch("http://localhost:8080/api/signup", options);
     const res = await data.json();
     return res;
   }
@@ -54,13 +54,13 @@ function apiFacade() {
   // fetch data and catch possible errors
   async function fetchAdminData() {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "http://localhost:8080/api/info/admin", options);
+    const data = await fetch("http://localhost:8080/api/info/admin", options);
     return data.json();
   }
 
   async function fetchUserData() {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "http://localhost:8080/api/info/user", options);
+    const data = await fetch("http://localhost:8080/api/info/user", options);
     return data.json();
   }
   async function fetchData(url) {
@@ -77,7 +77,7 @@ function apiFacade() {
 
   function deleteCar(id) {
     const options = makeOptions("DELETE", true);
-    return fetch(URL + "http://localhost:8080/api/cars/" + id, options);
+    return fetch("http://localhost:8080/api/cars/" + id, options);
   }
 
   const makeOptions = (method, addToken, body) => {
