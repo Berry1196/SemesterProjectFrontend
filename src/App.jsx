@@ -10,7 +10,6 @@ import AdminHome from "./routes/admin/AdminHome";
 import UserHome from "./routes/user/UserHome";
 import CreateUser from "./routes/CreateUser";
 import Exercises from "./routes/admin/Exercises";
-import MusclePhoto from "./routes/admin/MusclePhoto";
 
 function App() {
   const [username, setUsername] = useState("");
