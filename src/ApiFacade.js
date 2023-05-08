@@ -69,15 +69,17 @@ function apiFacade() {
     return data.json();
   }
 
-  async function fetchExercises(muscle) {
+  async function fetchExercises() {
     const options = makeOptions("GET", true);
-    const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
+    const data = await fetch("http://localhost:8080/api/workouts/" , options);
     return data.json();
   }
 
-  function deleteCar(id) {
-    const options = makeOptions("DELETE", true);
-    return fetch("http://localhost:8080/api/cars/" + id, options);
+  
+  async function fetchWorkouts() {
+    const options = makeOptions("GET", true);
+    const data = await fetch("http://localhost:8080/api/workouts/" , options);
+    return data.json();
   }
 
   const makeOptions = (method, addToken, body) => {
@@ -127,7 +129,7 @@ function apiFacade() {
     readJwtToken,
     fetchData,
     createNewCar,
-    deleteCar,
+    fetchWorkouts,
     createJoke,
     fetchExercises,
     createUser,
