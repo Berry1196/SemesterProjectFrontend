@@ -39,6 +39,13 @@ function apiFacade() {
     return res;
   }
 
+  async function createWorkout(workout) {
+    const options = makeOptions("POST", true, workout);
+    const data = await fetch("http://localhost:8080/api/workouts", options);
+    const res = await data.json();
+    return res;
+  }
+
   // create muscle photo
   async function generatePhoto(muscles) {
     const data = await fetch("http://localhost:8080/api/workouts/photo", {
@@ -134,6 +141,7 @@ function apiFacade() {
     fetchExercises,
     createUser,
     generatePhoto,
+    createWorkout,
   };
 }
 const facade = apiFacade();

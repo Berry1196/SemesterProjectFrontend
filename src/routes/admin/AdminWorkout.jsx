@@ -10,6 +10,8 @@ export default function AdminWorkout() {
   const [image, setImage] = useState("");
   const [workouts, setWorkouts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openArrow, setOpenArrow] = useState(false);
+  const [workoutName, setWorkoutName] = useState({ name: "" });
 
   async function handleGeneratePhoto(muscles) {
     const imageUrl = await facade.generatePhoto(muscles);
@@ -18,55 +20,26 @@ export default function AdminWorkout() {
 
   useEffect(() => {
     facade.fetchWorkouts().then((data) => setWorkouts(data));
-    console.log(workouts);
   }, []);
 
-  const team = [
-    {
-      name: "Tom Cook",
-      email: "tom.cook@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Whitney Francis",
-      email: "whitney.francis@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Leonard Krasner",
-      email: "leonard.krasner@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Floyd Miles",
-      email: "floyd.miles@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Emily Selman",
-      email: "emily.selman@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-  ];
+  function onChange(e) {
+    setWorkoutName({ ...workoutName, [e.target.id]: e.target.value });
+    console.log(workoutName);
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+    facade.createWorkout(workoutName);
+    setOpen(false);
+    window.location.reload();
+  }
 
   return (
     <Fragment>
-      {/* BELOW SEARCH FIELD */}
-
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6 text-gray-900">workout</h1>
-          <p className="mt-2 text-sm text-gray-700">A list of all the workout in the database including their name, type, muscle, equipment and difficulty.</p>
+          <p className="mt-2 text-sm text-gray-700">A list of all the workouts in the database.</p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
@@ -102,16 +75,6 @@ export default function AdminWorkout() {
                           Delete workout<span className="sr-only">, {workout.name}</span>
                         </a>
                       </td>
-                      {workout.exercisesList.map((exercise) => (
-                        <tbody key={exercise.name}>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{exercise.name}</td>
-                          <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                            <a href="#" className="text-red-600 hover:text-red-900">
-                              Delete exercise<span className="sr-only">, {exercise.name}</span>
-                            </a>
-                          </td>
-                        </tbody>
-                      ))}
                     </tr>
                   ))}
                 </tbody>
@@ -149,11 +112,11 @@ export default function AdminWorkout() {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
+                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onSubmit={onSubmit}>
                       <div className="h-0 flex-1 overflow-y-auto">
                         <div className="bg-indigo-700 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
-                            <Dialog.Title className="text-base font-semibold leading-6 text-white">New Project</Dialog.Title>
+                            <Dialog.Title className="text-base font-semibold leading-6 text-white">New Workout</Dialog.Title>
                             <div className="ml-3 flex h-7 items-center">
                               <button
                                 type="button"
@@ -166,126 +129,28 @@ export default function AdminWorkout() {
                             </div>
                           </div>
                           <div className="mt-1">
-                            <p className="text-sm text-indigo-300">Get started by filling in the information below to create your new project.</p>
+                            <p className="text-sm text-indigo-300">Create a new workout!.</p>
                           </div>
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
                           <div className="divide-y divide-gray-200 px-4 sm:px-6">
-                            <div className="space-y-6 pb-5 pt-6">
-                              <div>
-                                <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
-                                  Project name
-                                </label>
-                                <div className="mt-2">
-                                  <input
-                                    type="text"
-                                    name="project-name"
-                                    id="project-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                                </div>
+                            <div>
+                              <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                Workout Name
+                              </label>
+                              <div className="mt-2">
+                                <input
+                                  required
+                                  type="text"
+                                  name="project-name"
+                                  id="name"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  placeholder="Workout Name"
+                                  onChange={onChange}
+                                />
                               </div>
-                              <div>
-                                <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-                                  Description
-                                </label>
-                                <div className="mt-2">
-                                  <textarea
-                                    id="description"
-                                    name="description"
-                                    rows={4}
-                                    className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                                    defaultValue={""}
-                                  />
-                                </div>
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-medium leading-6 text-gray-900">Team Members</h3>
-                                <div className="mt-2">
-                                  <div className="flex space-x-2">
-                                    {team.map((person) => (
-                                      <a key={person.email} href={person.href} className="rounded-full hover:opacity-75">
-                                        <img className="inline-block h-8 w-8 rounded-full" src={person.imageUrl} alt={person.name} />
-                                      </a>
-                                    ))}
-                                    <button
-                                      type="button"
-                                      className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-dashed border-gray-200 bg-white text-gray-400 hover:border-gray-300 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                      <span className="sr-only">Add team member</span>
-                                      <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <fieldset>
-                                <legend className="text-sm font-medium leading-6 text-gray-900">Privacy</legend>
-                                <div className="mt-2 space-y-4">
-                                  <div className="relative flex items-start">
-                                    <div className="absolute flex h-6 items-center">
-                                      <input
-                                        id="privacy-public"
-                                        name="privacy"
-                                        aria-describedby="privacy-public-description"
-                                        type="radio"
-                                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        defaultChecked
-                                      />
-                                    </div>
-                                    <div className="pl-7 text-sm leading-6">
-                                      <label htmlFor="privacy-public" className="font-medium text-gray-900">
-                                        Public access
-                                      </label>
-                                      <p id="privacy-public-description" className="text-gray-500">
-                                        Everyone with the link will see this project.
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <div className="relative flex items-start">
-                                      <div className="absolute flex h-6 items-center">
-                                        <input
-                                          id="privacy-private-to-project"
-                                          name="privacy"
-                                          aria-describedby="privacy-private-to-project-description"
-                                          type="radio"
-                                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        />
-                                      </div>
-                                      <div className="pl-7 text-sm leading-6">
-                                        <label htmlFor="privacy-private-to-project" className="font-medium text-gray-900">
-                                          Private to project members
-                                        </label>
-                                        <p id="privacy-private-to-project-description" className="text-gray-500">
-                                          Only members of this project would be able to access.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <div className="relative flex items-start">
-                                      <div className="absolute flex h-6 items-center">
-                                        <input
-                                          id="privacy-private"
-                                          name="privacy"
-                                          aria-describedby="privacy-private-to-project-description"
-                                          type="radio"
-                                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        />
-                                      </div>
-                                      <div className="pl-7 text-sm leading-6">
-                                        <label htmlFor="privacy-private" className="font-medium text-gray-900">
-                                          Private to you
-                                        </label>
-                                        <p id="privacy-private-description" className="text-gray-500">
-                                          You are the only one able to access this project.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </fieldset>
                             </div>
+
                             <div className="pb-6 pt-4">
                               <div className="flex text-sm">
                                 <a href="#" className="group inline-flex items-center font-medium text-indigo-600 hover:text-indigo-900">
@@ -315,7 +180,7 @@ export default function AdminWorkout() {
                           type="submit"
                           className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          Save
+                          Create workout
                         </button>
                       </div>
                     </form>
