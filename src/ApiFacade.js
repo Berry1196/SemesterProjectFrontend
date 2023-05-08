@@ -31,10 +31,19 @@ function apiFacade() {
     const options = makeOptions("POST", true, joke);
     return fetch("http://localhost:8080/api/cars/jokes", options);
   }
+
   //Create user fucntion
   async function createUser(user) {
     const options = makeOptions("POST", true, user);
     const data = await fetch("http://localhost:8080/api/signup", options);
+    const res = await data.json();
+    return res;
+  }
+
+  // add workout to user
+  async function linkWorkoutToUser(username, workout) {
+    const options = makeOptions("POST", true, workout);
+    const data = await fetch("http://localhost:8080/api/workouts/" + username, options);
     const res = await data.json();
     return res;
   }
@@ -70,6 +79,12 @@ function apiFacade() {
   }
 
   async function fetchExercises(muscle) {
+    const options = makeOptions("GET", true);
+    const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
+    return data.json();
+  }
+
+  async function fetchWorkouts(muscle) {
     const options = makeOptions("GET", true);
     const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
     return data.json();
@@ -132,6 +147,8 @@ function apiFacade() {
     fetchExercises,
     createUser,
     generatePhoto,
+    fetchWorkouts,
+    linkWorkoutToUser,
   };
 }
 const facade = apiFacade();
