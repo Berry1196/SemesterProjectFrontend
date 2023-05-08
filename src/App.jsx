@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Layout from "./components/Layout";
@@ -7,9 +7,10 @@ import "./index.css";
 import { useEffect } from "react";
 import facade from "./ApiFacade";
 import AdminHome from "./routes/admin/AdminHome";
-import UserHome from "./routes/user/UserHome";
+import UserHome from "./routes/user/Dashboard";
 import CreateUser from "./routes/CreateUser";
 import Exercises from "./routes/admin/Exercises";
+import Workouts from "./routes/user/Workouts";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           {facade.loggedIn() && role === "admin" && <Route path="/" element={<AdminHome username={username} setRole={setRole} role={role} />} />}
           {facade.loggedIn() && role === "user" && <Route path="/" element={<UserHome username={username} role={role} />} />}
+          {facade.loggedIn() && role === "user" && <Route path="/workouts" element={<Workouts username={username} />} />}
           {!facade.loggedIn() && <Route path="/" element={<Home username={username} role={role} />} />}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
