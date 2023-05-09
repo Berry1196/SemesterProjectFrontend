@@ -115,7 +115,7 @@ function apiFacade() {
     return data.json();
   }
 
-  async function fetchWorkouts(muscle) {
+  async function fetchWorkout(muscle) {
     const options = makeOptions("GET", true);
     const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
     return data.json();
@@ -177,7 +177,7 @@ function apiFacade() {
     readJwtToken,
     fetchData,
     createNewCar,
-    fetchWorkouts,
+    fetchWorkout,
     createJoke,
     fetchExercises,
     createUser,

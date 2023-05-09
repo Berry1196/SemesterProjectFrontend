@@ -21,7 +21,7 @@ export default function Workouts({ username }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    facade.fetchWorkouts(input).then((data) => setWorkouts(data));
+    facade.fetchWorkout(input).then((data) => setWorkouts(data));
   }
 
   function handleSelectWorkout(id) {
