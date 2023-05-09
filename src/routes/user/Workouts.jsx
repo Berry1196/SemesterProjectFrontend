@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import facade from "../../ApiFacade";
 import { Dialog, Transition } from "@headlessui/react";
+import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
 export default function Workouts({ username }) {
   const [open, setOpen] = useState(false);
@@ -10,13 +11,15 @@ export default function Workouts({ username }) {
   const [selectedWorkout, setSelectedWorkout] = useState({});
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [image, setImage] = useState("");
+  const [userWorkouts, setUserWorkouts] = useState([]);
+  const [workoutAlreadyAdded, setWorkoutAlreadyAdded] = useState(false);
 
   function handleChange(e) {
     setInput(e.target.value);
   }
 
   useEffect(() => {
-    console.log(selectedWorkout);
+    facade.fetchWorkoutsByUsername(username).then((data) => setUserWorkouts(data));
   }, [selectedWorkout]);
 
   function handleSubmit(e) {
@@ -27,6 +30,13 @@ export default function Workouts({ username }) {
   function handleSelectWorkout(id) {
     // get the selected workout from the workouts array
     const workout = workouts.find((workout) => workout.id === id);
+
+    // check if the workout is already added
+    if (userWorkouts.find((userWorkout) => userWorkout.id === workout.id)) {
+      setWorkoutAlreadyAdded(true);
+    } else {
+      setWorkoutAlreadyAdded(false);
+    }
 
     // set the selected workout
     setSelectedWorkout(workout);
@@ -46,7 +56,7 @@ export default function Workouts({ username }) {
   }
 
   function handleAddWorkout() {
-    facade.linkWorkoutToUser(username, selectedWorkout).then((data) => console.log(data));
+    facade.linkWorkoutToUser(username, selectedWorkout);
     setOpen(false);
     setSelectedWorkout({});
     setMuscleGroups([]);
@@ -159,13 +169,25 @@ export default function Workouts({ username }) {
                     </div>
                   </div>
                   <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                      onClick={handleAddWorkout}
-                    >
-                      Add to list
-                    </button>
+                    {!workoutAlreadyAdded ? (
+                      <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                        onClick={handleAddWorkout}
+                      >
+                        Add to list
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                        onClick={handleAddWorkout}
+                      >
+                        <CheckBadgeIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+                        Already added
+                      </button>
+                    )}
                     <button
                       type="button"
                       className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"

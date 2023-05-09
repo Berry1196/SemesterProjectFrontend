@@ -1,22 +1,25 @@
 import { Fragment, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import Home from "./routes/Home";
-import Login from "./routes/Login";
 import Layout from "./components/Layout";
 import "./index.css";
 import { useEffect } from "react";
 import facade from "./ApiFacade";
-import AdminDashboard from "./routes/admin/Dashboard";
-import UserHome from "./routes/user/Dashboard";
+
+// routes
+import Home from "./routes/Home";
 import CreateUser from "./routes/CreateUser";
-import Exercises from "./routes/admin/Exercises";
-import Workouts from "./routes/user/Workouts";
-import AdminWorkout from "./routes/admin/AdminWorkout";
-import About from "./routes/About.jsx";
+import Login from "./routes/Login";
+import About from "./routes/About";
+import AdminDashboard from "./routes/admin/Dashboard";
+import UserDashboard from "./routes/user/Dashboard";
+import AdminWorkouts from "./routes/admin/Workouts";
+import UserWorkouts from "./routes/user/Workouts";
+import AdminExercises from "./routes/admin/Exercises";
 
 function App() {
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("");
+
   useEffect(() => {
     if (facade.loggedIn()) {
       const token = facade.getToken();
@@ -27,19 +30,30 @@ function App() {
     }
   }, []);
 
+  const adminRoutes = (
+    <Fragment>
+      <Route path="/" element={<AdminDashboard />} />
+      <Route path="/workouts" element={<AdminWorkouts />} />
+      <Route path="/exercises" element={<AdminExercises />} />
+    </Fragment>
+  );
+
+  const userRoutes = (
+    <Fragment>
+      <Route path="/" element={<UserDashboard username={username} />} />
+      <Route path="/workouts" element={<UserWorkouts username={username} />} />
+    </Fragment>
+  );
+
   return (
     <Fragment>
       <Layout username={username} role={role}>
         <Routes>
-          {facade.loggedIn() && role === "admin" && <Route path="/" element={<AdminDashboard username={username} setRole={setRole} role={role} />} />}
-          {facade.loggedIn() && role === "user" && <Route path="/" element={<UserHome username={username} role={role} />} />}
-          {facade.loggedIn() && role === "user" && <Route path="/workouts" element={<Workouts username={username} />} />}
-          {!facade.loggedIn() && <Route path="/" element={<Home username={username} role={role} />} />}
-          <Route path="/about" element={<About/>} />
+          {role === "admin" ? adminRoutes : userRoutes}
+
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
-          {facade.loggedIn() && role === "admin" && <Route path="/exercises" element={<Exercises />} />}
-          {facade.loggedIn() && role === "admin" && <Route path="/workout" element={<AdminWorkout />} />}
         </Routes>
       </Layout>
     </Fragment>

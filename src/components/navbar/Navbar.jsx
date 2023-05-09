@@ -1,5 +1,4 @@
 import { Disclosure } from "@headlessui/react";
-import { useLocation } from "react-router-dom";
 import NavLogo from "./NavLogo";
 import DesktopNavMenu from "./DesktopNavMenu";
 import NavHamburgerButton from "./NavHamburgerButton";
@@ -11,49 +10,33 @@ import UsernameButton from "./UsernameButton";
 import RoleButton from "./RoleButton";
 import SignUpButton from "./SignUpButton";
 import { useEffect, useState } from "react";
-
-// Customized navigation page for the GUEST
-const guestNavigation = [
-  { name: "Home", href: "/", current: false },
-  { name: "About", href: "/about", current: false },
-];
-
-// Customized navigation page for the USER
-const userNavigation = [
-  { name: "Home", href: "/", current: false },
-  { name: "About", href: "/about", current: false },
-  { name: "Exercises", href: "/exercises", current: false },
-];
-
-// Customized navigation page for the ADMIN
-const adminNavigation = [
-  { name: "Home", href: "/", current: false },
-  { name: "About", href: "/about", current: false },
-  { name: "Exercises", href: "/exercises", current: false },
-  { name: "Workout", href: "/workout", current: false },
-];
+import { useLocation } from "react-router-dom";
 
 export default function Navbar({ username, role }) {
   const [navigation, setNavigation] = useState([]);
+  const location = useLocation();
 
-  // Set customized navigation based on role
   useEffect(() => {
-    if (role === "user") {
-      setNavigation(userNavigation);
-    } else if (role === "admin") {
-      setNavigation(adminNavigation);
+    if (facade.loggedIn()) {
+      if (role === "admin") {
+        setNavigation([
+          { name: "Dashboard", href: "/", current: location.pathname === "/" },
+          { name: "Exercises", href: "/exercises", current: location.pathname === "/exercises" },
+          { name: "Workouts", href: "/workouts", current: location.pathname === "/workouts" },
+        ]);
+      } else if (role === "user") {
+        setNavigation([
+          { name: "Dashboard", href: "/", current: location.pathname === "/" },
+          { name: "Workouts", href: "/workouts", current: location.pathname === "/workouts" },
+        ]);
+      }
     } else {
-      setNavigation(guestNavigation);
+      setNavigation([
+        { name: "Home", href: "/", current: location.pathname === "/" },
+        { name: "About", href: "/about", current: location.pathname === "/about" },
+      ]);
     }
-  }, [role]);
-
-  navigation.map((item) => {
-    if (item.href === useLocation().pathname) {
-      item.current = true;
-    } else {
-      item.current = false;
-    }
-  });
+  }, [location.pathname, role]);
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
