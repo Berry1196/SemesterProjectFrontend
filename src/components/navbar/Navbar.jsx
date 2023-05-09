@@ -10,13 +10,42 @@ import facade from "../../ApiFacade";
 import UsernameButton from "./UsernameButton";
 import RoleButton from "./RoleButton";
 import SignUpButton from "./SignUpButton";
+import {useEffect, useState} from "react";
 
-const navigation = [
+// Customized navigation page for the GUEST
+const guestNavigation = [
   { name: "Home", href: "/", current: false },
-  { name: "Exercises", href: "/exercises", current: false },
+  // { name: "Exercises", href: "/exercises", current: false },
+  { name: "About", href: "/about", current: false },
+];
+// Customized navigation page for the USER
+const userNavigation = [
+    { name: "Home", href: "/", current: false },
+    { name: "About", href: "/about", current: false },
+    { name: "Exercises", href: "/exercises", current: false },
+];
+// Customized navigation page for the ADMIN
+const adminNavigation = [
+    { name: "Home", href: "/", current: false },
+    { name: "About", href: "/about", current: false },
+    { name: "Exercises", href: "/exercises", current: false },
 ];
 
 export default function Navbar({ username, role }) {
+  const [navigation, setNavigation] = useState([]);
+
+  // Set customized navigation based on role
+  useEffect(() => {
+    if (facade.loggedIn() && role === "admin") {
+      setNavigation(adminNavigation);
+    } else if (facade.loggedIn() && role === "user") {
+      setNavigation(userNavigation);
+    } else {
+      setNavigation(guestNavigation);
+    }
+
+  }, [])
+
   navigation.map((item) => {
     if (item.href === useLocation().pathname) {
       item.current = true;

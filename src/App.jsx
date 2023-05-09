@@ -10,6 +10,7 @@ import AdminHome from "./routes/admin/AdminHome";
 import UserHome from "./routes/user/UserHome";
 import CreateUser from "./routes/CreateUser";
 import Exercises from "./routes/admin/Exercises";
+import About from "./routes/About.jsx";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -31,6 +32,7 @@ function App() {
           {facade.loggedIn() && role === "admin" && <Route path="/" element={<AdminHome username={username} setRole={setRole} role={role} />} />}
           {facade.loggedIn() && role === "user" && <Route path="/" element={<UserHome username={username} role={role} />} />}
           {!facade.loggedIn() && <Route path="/" element={<Home username={username} role={role} />} />}
+          <Route path="/about" element={<About/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
           {facade.loggedIn() && role === "admin" && <Route path="/exercises" element={<Exercises />} />}
