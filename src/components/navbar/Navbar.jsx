@@ -30,6 +30,7 @@ const adminNavigation = [
   { name: "Home", href: "/", current: false },
   { name: "About", href: "/about", current: false },
   { name: "Exercises", href: "/exercises", current: false },
+  { name: "Workout", href: "/workout", current: false },
 ];
 
 export default function Navbar({ username, role }) {
