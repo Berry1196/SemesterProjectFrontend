@@ -49,7 +49,10 @@ function App() {
     <Fragment>
       <Layout username={username} role={role}>
         <Routes>
-          {role === "admin" ? adminRoutes : userRoutes}
+          {role === "admin" ? adminRoutes : null}
+          {role === "user" ? userRoutes : null}
+
+          <Route path="/" element={role === "admin" || role === "user" ? null : <Home />} />
 
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
