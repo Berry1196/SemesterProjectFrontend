@@ -1,73 +1,43 @@
 import facade from "../../ApiFacade";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon, CheckIcon } from "@heroicons/react/24/outline";
+import { LinkIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 
 export default function Exercises() {
-  const [input, setInput] = useState("");
-  const [muscles, setMuscles] = useState("");
-  const [image, setImage] = useState("");
-  const [exercises, setExercises] = useState([
-    {
-      name: "Bench Press",
-      type: "Strength",
-      muscle: "Chest",
-      equipment: "Barbell",
-      difficulty: "Intermediate",
-    },
-    {
-      name: "Dumbbell Press",
-      type: "Strength",
-      muscle: "Chest",
-      equipment: "Barbell",
-      difficulty: "Intermediate",
-    },
-  ]);
-  const [open, setOpen] = useState(false);
+  const [exercises, setExercises] = useState([]);
+  const [exerciseInstructions, setExerciseInstructions] = useState("");
+  const [newExercise, setNewExercise] = useState({
+    name: "",
+    type: "",
+    muscle: "",
+    equipment: "",
+    difficulty: "",
+    instructions: "",
+  });
 
-  async function handleGeneratePhoto(muscles) {
-    const imageUrl = await facade.generatePhoto(muscles);
-    setImage(imageUrl);
+  const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    facade.getExercises().then((data) => setExercises(data));
+  }, []);
+
+  function handleChange(e) {
+    setNewExercise({ ...newExercise, [e.target.name]: e.target.value });
   }
 
-  const team = [
-    {
-      name: "Tom Cook",
-      email: "tom.cook@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Whitney Francis",
-      email: "whitney.francis@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Leonard Krasner",
-      email: "leonard.krasner@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Floyd Miles",
-      email: "floyd.miles@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Emily Selman",
-      email: "emily.selman@example.com",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-  ];
+  function handleSubmit(e) {
+    e.preventDefault();
+    facade.createExercise(newExercise);
+    setOpen(false);
+    window.location.reload();
+  }
+
+  function handleDelete(id) {
+    facade.deleteExercise(id);
+    window.location.reload();
+  }
 
   return (
     <Fragment>
@@ -112,8 +82,8 @@ export default function Exercises() {
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Difficulty
                     </th>
-                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                      <span className="sr-only">Add to workout</span>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Instructions
                     </th>
                   </tr>
                 </thead>
@@ -125,10 +95,20 @@ export default function Exercises() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{exercise.muscle}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{exercise.equipment}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{exercise.difficulty}</td>
+                      {/* print 20 characters of instructions in td */}
+                      <td
+                        className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-indigo-600 hover:text-indigo-500 hover:cursor-pointer"
+                        onClick={() => {
+                          setOpenModal(true);
+                          setExerciseInstructions(exercise.instructions);
+                        }}
+                      >
+                        View more
+                      </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <a href="#" className="text-red-600 hover:text-red-900">
-                          Delete exercise<span className="sr-only">, {exercise.name}</span>
-                        </a>
+                        <p className="text-red-600 hover:text-red-900 hover:cursor-pointer" onClick={() => handleDelete(exercise.id)}>
+                          Delete exercise
+                        </p>
                       </td>
                     </tr>
                   ))}
@@ -138,6 +118,59 @@ export default function Exercises() {
           </div>
         </div>
       </div>
+
+      {/* EXERCISE INSTRUCTIONS MODAL */}
+      <Transition.Root show={openModal} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={setOpenModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              >
+                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                  <div>
+                    <div className="mt-3 text-center sm:mt-5">
+                      <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                        Exercise Instructions
+                      </Dialog.Title>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">{exerciseInstructions}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-5 sm:mt-6">
+                    <button
+                      type="button"
+                      className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      onClick={() => setOpenModal(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
 
       {/* CREATE NEW WORKOUT SLIDE-IN */}
       <Transition.Root show={open} as={Fragment}>
@@ -167,11 +200,11 @@ export default function Exercises() {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
+                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onSubmit={handleSubmit}>
                       <div className="h-0 flex-1 overflow-y-auto">
                         <div className="bg-indigo-700 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
-                            <Dialog.Title className="text-base font-semibold leading-6 text-white">New Project</Dialog.Title>
+                            <Dialog.Title className="text-base font-semibold leading-6 text-white">New exercise</Dialog.Title>
                             <div className="ml-3 flex h-7 items-center">
                               <button
                                 type="button"
@@ -184,138 +217,102 @@ export default function Exercises() {
                             </div>
                           </div>
                           <div className="mt-1">
-                            <p className="text-sm text-indigo-300">Get started by filling in the information below to create your new project.</p>
+                            <p className="text-sm text-indigo-300">Get started by filling in the information below to create your new exercise.</p>
                           </div>
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
                           <div className="divide-y divide-gray-200 px-4 sm:px-6">
                             <div className="space-y-6 pb-5 pt-6">
                               <div>
-                                <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
-                                  Project name
+                                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Exercise name
                                 </label>
                                 <div className="mt-2">
                                   <input
                                     type="text"
-                                    name="project-name"
-                                    id="project-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    name="name"
+                                    id="name"
+                                    placeholder="e.g. Squats"
+                                    onChange={handleChange}
+                                    className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
                                 </div>
                               </div>
                               <div>
-                                <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-                                  Description
+                                <label htmlFor="type" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Type of exercise
+                                </label>
+                                <div className="mt-2">
+                                  <input
+                                    type="text"
+                                    name="type"
+                                    id="type"
+                                    placeholder="e.g. Strength"
+                                    onChange={handleChange}
+                                    className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label htmlFor="muscle" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Muscle group
+                                </label>
+                                <div className="mt-2">
+                                  <input
+                                    type="text"
+                                    name="muscle"
+                                    id="muscle"
+                                    placeholder="e.g. Legs"
+                                    onChange={handleChange}
+                                    className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label htmlFor="equipment" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Equipment used
+                                </label>
+                                <div className="mt-2">
+                                  <input
+                                    type="text"
+                                    name="equipment"
+                                    id="equipment"
+                                    placeholder="e.g. Barbell"
+                                    onChange={handleChange}
+                                    className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label htmlFor="difficulty" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Difficulty
+                                </label>
+                                <div className="mt-2">
+                                  <input
+                                    type="text"
+                                    name="difficulty"
+                                    id="difficulty"
+                                    placeholder="e.g. Beginner"
+                                    onChange={handleChange}
+                                    className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label htmlFor="instructions" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Instructions
                                 </label>
                                 <div className="mt-2">
                                   <textarea
-                                    id="description"
-                                    name="description"
+                                    id="instructions"
+                                    name="instructions"
                                     rows={4}
-                                    className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
+                                    placeholder="e.g. Stand with your feet shoulder-width apart. Lower your body until your thighs are parallel to the floor. Pause, then push yourself back up to the starting position."
+                                    className="block w-full rounded-md px-2 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
                                     defaultValue={""}
+                                    onChange={handleChange}
                                   />
                                 </div>
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-medium leading-6 text-gray-900">Team Members</h3>
-                                <div className="mt-2">
-                                  <div className="flex space-x-2">
-                                    {team.map((person) => (
-                                      <a key={person.email} href={person.href} className="rounded-full hover:opacity-75">
-                                        <img className="inline-block h-8 w-8 rounded-full" src={person.imageUrl} alt={person.name} />
-                                      </a>
-                                    ))}
-                                    <button
-                                      type="button"
-                                      className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-dashed border-gray-200 bg-white text-gray-400 hover:border-gray-300 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                      <span className="sr-only">Add team member</span>
-                                      <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <fieldset>
-                                <legend className="text-sm font-medium leading-6 text-gray-900">Privacy</legend>
-                                <div className="mt-2 space-y-4">
-                                  <div className="relative flex items-start">
-                                    <div className="absolute flex h-6 items-center">
-                                      <input
-                                        id="privacy-public"
-                                        name="privacy"
-                                        aria-describedby="privacy-public-description"
-                                        type="radio"
-                                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        defaultChecked
-                                      />
-                                    </div>
-                                    <div className="pl-7 text-sm leading-6">
-                                      <label htmlFor="privacy-public" className="font-medium text-gray-900">
-                                        Public access
-                                      </label>
-                                      <p id="privacy-public-description" className="text-gray-500">
-                                        Everyone with the link will see this project.
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <div className="relative flex items-start">
-                                      <div className="absolute flex h-6 items-center">
-                                        <input
-                                          id="privacy-private-to-project"
-                                          name="privacy"
-                                          aria-describedby="privacy-private-to-project-description"
-                                          type="radio"
-                                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        />
-                                      </div>
-                                      <div className="pl-7 text-sm leading-6">
-                                        <label htmlFor="privacy-private-to-project" className="font-medium text-gray-900">
-                                          Private to project members
-                                        </label>
-                                        <p id="privacy-private-to-project-description" className="text-gray-500">
-                                          Only members of this project would be able to access.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <div className="relative flex items-start">
-                                      <div className="absolute flex h-6 items-center">
-                                        <input
-                                          id="privacy-private"
-                                          name="privacy"
-                                          aria-describedby="privacy-private-to-project-description"
-                                          type="radio"
-                                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        />
-                                      </div>
-                                      <div className="pl-7 text-sm leading-6">
-                                        <label htmlFor="privacy-private" className="font-medium text-gray-900">
-                                          Private to you
-                                        </label>
-                                        <p id="privacy-private-description" className="text-gray-500">
-                                          You are the only one able to access this project.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </fieldset>
-                            </div>
-                            <div className="pb-6 pt-4">
-                              <div className="flex text-sm">
-                                <a href="#" className="group inline-flex items-center font-medium text-indigo-600 hover:text-indigo-900">
-                                  <LinkIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-900" aria-hidden="true" />
-                                  <span className="ml-2">Copy link</span>
-                                </a>
-                              </div>
-                              <div className="mt-4 flex text-sm">
-                                <a href="#" className="group inline-flex items-center text-gray-500 hover:text-gray-900">
-                                  <QuestionMarkCircleIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-                                  <span className="ml-2">Learn more about sharing</span>
-                                </a>
                               </div>
                             </div>
                           </div>
@@ -344,25 +341,6 @@ export default function Exercises() {
           </div>
         </Dialog>
       </Transition.Root>
-
-      <div className="flex flex-col gap-4 bg-gray-200 mt-10 w-1/2 p-4">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            onChange={(event) => setMuscles(event.target.value)}
-            className="ring-1 ring-gray-300 ring-inset rounded text-sm px-2 py-1 w-full focus:ring-2 focus:ring-blue-600 focus:outline-none"
-            placeholder="Input muscle groups (seperated by comma)"
-          />
-          <button
-            type="button"
-            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-            onClick={() => handleGeneratePhoto(muscles)}
-          >
-            Generate
-          </button>
-        </div>
-        {image != "" && <img src={image} alt={"something"} className="" />}
-      </div>
     </Fragment>
   );
 }

@@ -6,7 +6,7 @@ import Layout from "./components/Layout";
 import "./index.css";
 import { useEffect } from "react";
 import facade from "./ApiFacade";
-import AdminHome from "./routes/admin/AdminHome";
+import AdminDashboard from "./routes/admin/Dashboard";
 import UserHome from "./routes/user/Dashboard";
 import CreateUser from "./routes/CreateUser";
 import Exercises from "./routes/admin/Exercises";
@@ -29,7 +29,7 @@ function App() {
     <Fragment>
       <Layout username={username} role={role}>
         <Routes>
-          {facade.loggedIn() && role === "admin" && <Route path="/" element={<AdminHome username={username} setRole={setRole} role={role} />} />}
+          {facade.loggedIn() && role === "admin" && <Route path="/" element={<AdminDashboard username={username} setRole={setRole} role={role} />} />}
           {facade.loggedIn() && role === "user" && <Route path="/" element={<UserHome username={username} role={role} />} />}
           {facade.loggedIn() && role === "user" && <Route path="/workouts" element={<Workouts username={username} />} />}
           {!facade.loggedIn() && <Route path="/" element={<Home username={username} role={role} />} />}
