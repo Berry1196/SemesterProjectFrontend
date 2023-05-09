@@ -71,6 +71,14 @@ function apiFacade() {
     const res = await data.json();
     return res;
   }
+  //add exercise to workout by id
+  async function linkExerciseToWorkout(id, exercise) {
+    const options = makeOptions("POST", true, exercise);
+    const data = await fetch("http://localhost:8080/api/workouts/exercises/" + id, options);
+    const res = await data.json();
+    return res;
+  }
+
 
   async function createWorkout(workout) {
     const options = makeOptions("POST", true, workout);
@@ -197,6 +205,7 @@ function apiFacade() {
     getExercises,
     createWorkout,
     fetchWorkoutsByUsername,
+    linkExerciseToWorkout,
   };
 }
 const facade = apiFacade();
