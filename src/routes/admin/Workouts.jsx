@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { data } from "autoprefixer";
 
 export default function AdminWorkout() {
   const [input, setInput] = useState("");
@@ -15,11 +16,16 @@ export default function AdminWorkout() {
   const [workoutName, setWorkoutName] = useState({ name: "" });
   const [openExerciseModal, setOpenExerciseModal] = useState(false);
   const cancelButtonRef = useRef(null);
+  const [exercises, setExercises] = useState([]);
 
   async function handleGeneratePhoto(muscles) {
     const imageUrl = await facade.generatePhoto(muscles);
     setImage(imageUrl);
   }
+  useEffect(() => {
+    facade.getExercises().then((data) => setExercises(data));
+    console.log(data);
+  }, []);
 
   useEffect(() => {
     facade.fetchWorkouts().then((data) => setWorkouts(data));
