@@ -33,14 +33,8 @@ export default function Workouts({ username }) {
 
     // set the muscle groups
     const muscleGroups = new Set();
-    workout.exercisesList.forEach((exercise) => muscleGroups.add(exercise.muscle));
+    workout.exercisesList.forEach((exercise) => muscleGroups.add(exercise.muscle.toLowerCase()));
     setMuscleGroups(Array.from(muscleGroups));
-
-    // if a muscle group is named "calves", change it to "calfs"
-    if (muscleGroups.has("calves")) {
-      muscleGroups.delete("calves");
-      muscleGroups.add("calfs");
-    }
 
     // convert the muscle groups to a string
     const muscleGroupsString = Array.from(muscleGroups).join(",");
@@ -53,18 +47,29 @@ export default function Workouts({ username }) {
 
   function handleAddWorkout() {
     facade.linkWorkoutToUser(username, selectedWorkout).then((data) => console.log(data));
+    setOpen(false);
+    setSelectedWorkout({});
+    setMuscleGroups([]);
+    window.location.reload();
   }
 
   return (
     <Fragment>
       <form>
         <div className="flex gap-2">
-          <input onChange={handleChange} className="px-3 py-2 border rounded" placeholder="Search by muscle group" />
+          <input onChange={handleChange} className="px-3 py-2 border rounded w-full" placeholder="Search by muscle group" />
           <button type="submit" className="btn bg-indigo-600 text-white px-3 py-2 rounded" onClick={handleSubmit}>
             Search
           </button>
         </div>
       </form>
+
+      {workouts.length === 0 && (
+        <div className="mt-10">
+          <p className="text-center text-gray-500">No workouts found</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-4 gap-4 mt-10">
         {workouts.map((workout) => (
           <div key={workout.id} className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -125,23 +130,30 @@ export default function Workouts({ username }) {
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
                         {selectedWorkout.name}
                       </Dialog.Title>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500 font-bold">Exercises</p>
-                        <ul>
-                          {selectedWorkout.exercisesList?.map((exercise) => (
-                            <li key={exercise.id} className="text-sm text-gray-500">
-                              {exercise.name}
-                            </li>
-                          ))}
-                        </ul>
-                        <p className="text-sm text-gray-500 font-bold">Muscle groups</p>
-                        <ul>
-                          {muscleGroups.map((muscle) => (
-                            <li key={muscle} className="text-sm text-gray-500">
-                              {muscle}
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="mt-4">
+                        <div className="grid grid-cols-2">
+                          <div>
+                            <p className="text-sm text-gray-500 font-bold">Exercises</p>
+                            <ul>
+                              {selectedWorkout.exercisesList?.map((exercise) => (
+                                <li key={exercise.id} className="text-sm text-gray-500">
+                                  {exercise.name}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500 font-bold">Muscle groups</p>
+                            <ul>
+                              {muscleGroups.map((muscle) => (
+                                <li key={muscle} className="text-sm text-gray-500">
+                                  {muscle}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
                         {image && <img src={image} alt="workout" />}
                       </div>
                     </div>

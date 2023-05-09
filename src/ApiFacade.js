@@ -74,6 +74,11 @@ function apiFacade() {
 
   // create muscle photo
   async function generatePhoto(muscles) {
+    // Rename muscle groups
+    if (muscles.includes("hamstrings")) {
+      muscles = muscles.replace("hamstrings", "hamstring");
+    }
+
     const data = await fetch("http://localhost:8080/api/workouts/photo", {
       method: "POST",
       body: muscles,
