@@ -29,6 +29,7 @@ const adminNavigation = [
     { name: "Home", href: "/", current: false },
     { name: "About", href: "/about", current: false },
     { name: "Exercises", href: "/exercises", current: false },
+    { name: "Workout", href: "/workout", current: false }
 ];
 
 export default function Navbar({ username, role }) {
@@ -36,15 +37,15 @@ export default function Navbar({ username, role }) {
 
   // Set customized navigation based on role
   useEffect(() => {
-    if (facade.loggedIn() && role === "admin") {
+    if (role === "admin") {
       setNavigation(adminNavigation);
-    } else if (facade.loggedIn() && role === "user") {
+    } else if (role === "user") {
       setNavigation(userNavigation);
     } else {
       setNavigation(guestNavigation);
     }
 
-  }, [])
+  }, [role])
 
   navigation.map((item) => {
     if (item.href === useLocation().pathname) {
