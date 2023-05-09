@@ -72,6 +72,13 @@ function apiFacade() {
     return res;
   }
 
+  async function createWorkout(workout) {
+    const options = makeOptions("POST", true, workout);
+    const data = await fetch("http://localhost:8080/api/workouts", options);
+    const res = await data.json();
+    return res;
+  }
+
   // create muscle photo
   async function generatePhoto(muscles) {
     const data = await fetch("http://localhost:8080/api/workouts/photo", {
@@ -102,9 +109,9 @@ function apiFacade() {
     return data.json();
   }
 
-  async function fetchExercises(muscle) {
+  async function fetchExercises() {
     const options = makeOptions("GET", true);
-    const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
+    const data = await fetch("http://localhost:8080/api/workouts/" , options);
     return data.json();
   }
 
@@ -113,7 +120,11 @@ function apiFacade() {
     const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
     return data.json();
   }
-
+  async function fetchWorkouts() {
+    const options = makeOptions("GET", true);
+    const data = await fetch("http://localhost:8080/api/workouts/" , options);
+    return data.json();
+  }
   function deleteCar(id) {
     const options = makeOptions("DELETE", true);
     return fetch("http://localhost:8080/api/cars/" + id, options);
@@ -166,7 +177,7 @@ function apiFacade() {
     readJwtToken,
     fetchData,
     createNewCar,
-    deleteCar,
+    fetchWorkouts,
     createJoke,
     fetchExercises,
     createUser,
@@ -176,6 +187,7 @@ function apiFacade() {
     createExercise,
     deleteExercise,
     getExercises,
+    createWorkout,
   };
 }
 const facade = apiFacade();

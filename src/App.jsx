@@ -11,6 +11,7 @@ import UserHome from "./routes/user/Dashboard";
 import CreateUser from "./routes/CreateUser";
 import Exercises from "./routes/admin/Exercises";
 import Workouts from "./routes/user/Workouts";
+import AdminWorkout from "./routes/admin/AdminWorkout";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -36,6 +37,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
           {facade.loggedIn() && role === "admin" && <Route path="/exercises" element={<Exercises />} />}
+          {facade.loggedIn() && role === "admin" && <Route path="/workout" element={<AdminWorkout />} />}
         </Routes>
       </Layout>
     </Fragment>
