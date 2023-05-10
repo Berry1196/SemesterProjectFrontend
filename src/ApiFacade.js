@@ -79,7 +79,6 @@ function apiFacade() {
     return res;
   }
 
-
   async function createWorkout(workout) {
     const options = makeOptions("POST", true, workout);
     const data = await fetch("http://localhost:8080/api/workouts", options);
@@ -119,12 +118,6 @@ function apiFacade() {
   async function fetchData(url) {
     const options = makeOptions("GET", true);
     const data = await fetch(url, options);
-    return data.json();
-  }
-
-  async function fetchExercises() {
-    const options = makeOptions("GET", true);
-    const data = await fetch("http://localhost:8080/api/workouts/", options);
     return data.json();
   }
 
@@ -195,7 +188,6 @@ function apiFacade() {
     createNewCar,
     fetchWorkout,
     createJoke,
-    fetchExercises,
     createUser,
     generatePhoto,
     fetchWorkouts,
