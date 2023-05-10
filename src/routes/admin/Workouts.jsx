@@ -17,6 +17,8 @@ export default function AdminWorkout() {
   const cancelButtonRef = useRef(null);
   const [exercises, setExercises] = useState([]);
   const [selected, setSelected] = useState(exercises[0]);
+  const [selectedWorkout, setSelectedWorkout] = useState(workouts[0]);
+  const [selectedExercise, setSelectedExercise] = useState(exercises[0]);
 
   async function handleGeneratePhoto(muscles) {
     const imageUrl = await facade.generatePhoto(muscles);
@@ -38,8 +40,7 @@ export default function AdminWorkout() {
   // function that adds an exercise to a workout
   function addExerciseToWorkout(workoutId, exerciseId) {
     facade.linkExerciseToWorkout(workoutId, exerciseId);
-    setOpenExerciseModal(false);
-    window.location.reload();
+    console.log(workoutId, exerciseId);
   }
 
   function onChange(e) {
@@ -88,7 +89,7 @@ export default function AdminWorkout() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {workouts.map((workout) => (
-                    <tr key={workout.name}>
+                    <tr key={workout.id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{workout.name}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a href="#" className="text-red-600 hover:text-red-900">
@@ -132,7 +133,7 @@ export default function AdminWorkout() {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onSubmit={onSubmit}>
+                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
                       <div className="h-0 flex-1 overflow-y-auto">
                         <div className="bg-indigo-700 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
@@ -171,7 +172,6 @@ export default function AdminWorkout() {
                               </div>
                             </div>
                             <button
-                              type="submit"
                               onClick={() => setOpenExerciseModal(true)}
                               className="mt-2 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
@@ -191,6 +191,7 @@ export default function AdminWorkout() {
                         <button
                           type="submit"
                           className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={onSubmit}
                         >
                           Create workout
                         </button>
@@ -284,7 +285,12 @@ export default function AdminWorkout() {
                                       >
                                         {({ selected, active }) => (
                                           <>
-                                            <span className={classNames(selected ? "font-semibold" : "font-normal", "block truncate")}>{workout.name}</span>
+                                            <span
+                                              className={classNames(selected ? "font-semibold" : "font-normal", "block truncate")}
+                                              onChange={(e) => setSelectedWorkout(e.target.value)}
+                                            >
+                                              {workout.name}
+                                            </span>
 
                                             {selected ? (
                                               <span
@@ -322,6 +328,9 @@ export default function AdminWorkout() {
                                     name={`exercise-${exercise.id}`}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                    onChange={(e) => {
+                                      setSelectedExercise(e.target.value);
+                                    }}
                                   />
                                 </div>
                               </div>
@@ -335,7 +344,7 @@ export default function AdminWorkout() {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                      onClick={() => addExerciseToWorkout()}
+                      onClick={() => addExerciseToWorkout(selectedExercise, selectedWorkout)}
                     >
                       Add to workout
                     </button>
