@@ -285,12 +285,17 @@ export default function AdminWorkout() {
                                       >
                                         {({ selected, active }) => (
                                           <>
-                                            <span
-                                              className={classNames(selected ? "font-semibold" : "font-normal", "block truncate")}
-                                              onChange={(e) => setSelectedWorkout(e.target.value)}
-                                            >
+                                            <label className="block truncate">
                                               {workout.name}
-                                            </span>
+                                              <input
+                                                  type="radio"
+                                                  name="workout"
+                                                  value={workout.id}
+                                                  checked={selected === workout.id}
+                                                  onChange={(e) => setSelectedWorkout(e.target.value)}
+                                                  style={{position: 'absolute', left: '-9999px'}}
+                                              />
+                                            </label>
 
                                             {selected ? (
                                               <span
@@ -328,8 +333,8 @@ export default function AdminWorkout() {
                                     name={`exercise-${exercise.id}`}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                    onChange={(e) => {
-                                      setSelectedExercise(e.target.value);
+                                    onChange={() => {
+                                      setSelectedExercise(exercise.id);
                                     }}
                                   />
                                 </div>
@@ -344,7 +349,7 @@ export default function AdminWorkout() {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                      onClick={() => addExerciseToWorkout(selectedExercise, selectedWorkout)}
+                      onClick={() => addExerciseToWorkout(selectedWorkout, selectedExercise)}
                     >
                       Add to workout
                     </button>
