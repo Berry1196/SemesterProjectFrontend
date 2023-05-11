@@ -15,6 +15,7 @@ import UserDashboard from "./routes/user/Dashboard";
 import AdminWorkouts from "./routes/admin/Workouts";
 import UserWorkouts from "./routes/user/Workouts";
 import AdminExercises from "./routes/admin/Exercises";
+import Activity from "./routes/user/Activity";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -42,6 +43,7 @@ function App() {
     <Fragment>
       <Route path="/" element={<UserDashboard username={username} />} />
       <Route path="/workouts" element={<UserWorkouts username={username} />} />
+      <Route path="/activity" element={<Activity username={username} />} />
     </Fragment>
   );
 

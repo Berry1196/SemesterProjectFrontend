@@ -57,10 +57,9 @@ export default function Workouts({ username }) {
 
   function handleAddWorkout() {
     facade.linkWorkoutToUser(username, selectedWorkout);
-    setOpen(false);
-    setSelectedWorkout({});
-    setMuscleGroups([]);
-    window.location.reload();
+    // add the workout to the userWorkouts array
+    setUserWorkouts([...userWorkouts, selectedWorkout]);
+    setWorkoutAlreadyAdded(true);
   }
 
   return (

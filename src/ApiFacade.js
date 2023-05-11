@@ -23,14 +23,6 @@ function apiFacade() {
     const res = await data.json();
     return res;
   }
-  function createNewCar(car) {
-    const options = makeOptions("POST", true, car);
-    return fetch("http://localhost:8080/api/cars", options);
-  }
-  function createJoke(joke) {
-    const options = makeOptions("POST", true, joke);
-    return fetch("http://localhost:8080/api/cars/jokes", options);
-  }
 
   //Create user fucntion
   async function createUser(user) {
@@ -56,6 +48,14 @@ function apiFacade() {
     return res;
   }
 
+  // Deletes a workout
+  async function deleteWorkout(id) {
+    const options = makeOptions("DELETE", true);
+    const data = await fetch("http://localhost:8080/api/workouts/" + id, options);
+    const res = await data.json();
+    return res;
+  }
+
   // Retrieves all exercises
   async function getExercises() {
     const options = makeOptions("GET", true);
@@ -68,6 +68,14 @@ function apiFacade() {
   async function linkWorkoutToUser(username, workout) {
     const options = makeOptions("POST", true, workout);
     const data = await fetch("http://localhost:8080/api/workouts/" + username, options);
+    const res = await data.json();
+    return res;
+  }
+
+  //add exercise to workout by id
+  async function linkExerciseToWorkout(id, exercise) {
+    const options = makeOptions("POST", true, exercise);
+    const data = await fetch("http://localhost:8080/api/workouts/exercises/" + id, options);
     const res = await data.json();
     return res;
   }
@@ -114,12 +122,6 @@ function apiFacade() {
     return data.json();
   }
 
-  async function fetchExercises() {
-    const options = makeOptions("GET", true);
-    const data = await fetch("http://localhost:8080/api/workouts/", options);
-    return data.json();
-  }
-
   async function fetchWorkout(muscle) {
     const options = makeOptions("GET", true);
     const data = await fetch("http://localhost:8080/api/workouts/" + muscle, options);
@@ -135,6 +137,24 @@ function apiFacade() {
   async function fetchWorkoutsByUsername(username) {
     const options = makeOptions("GET", true);
     const data = await fetch("http://localhost:8080/api/workouts/user/" + username, options);
+    return data.json();
+  }
+
+  async function deleteWorkoutFromUser(username, id) {
+    const options = makeOptions("DELETE", true);
+    const data = await fetch("http://localhost:8080/api/workouts/user/" + username + "/" + id, options);
+    return data.json();
+  }
+
+  async function fetchExerciseByName(name) {
+    const options = makeOptions("GET", true);
+    const data = await fetch("http://localhost:8080/api/exercises/" + name, options);
+    return data.json();
+  }
+
+  async function createExerciseStatus(exerciseStatus) {
+    const options = makeOptions("POST", true, exerciseStatus);
+    const data = await fetch("http://localhost:8080/api/exercisestatus/", options);
     return data.json();
   }
 
@@ -184,10 +204,7 @@ function apiFacade() {
     fetchUserData,
     readJwtToken,
     fetchData,
-    createNewCar,
     fetchWorkout,
-    createJoke,
-    fetchExercises,
     createUser,
     generatePhoto,
     fetchWorkouts,
@@ -197,6 +214,11 @@ function apiFacade() {
     getExercises,
     createWorkout,
     fetchWorkoutsByUsername,
+    linkExerciseToWorkout,
+    fetchExerciseByName,
+    deleteWorkout,
+    deleteWorkoutFromUser,
+    createExerciseStatus,
   };
 }
 const facade = apiFacade();

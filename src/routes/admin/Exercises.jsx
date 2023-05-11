@@ -307,6 +307,7 @@ export default function Exercises() {
                                     id="instructions"
                                     name="instructions"
                                     rows={4}
+                                    maxLength={255}
                                     placeholder="e.g. Stand with your feet shoulder-width apart. Lower your body until your thighs are parallel to the floor. Pause, then push yourself back up to the starting position."
                                     className="block w-full rounded-md px-2 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
                                     defaultValue={""}

@@ -1,39 +1,72 @@
 import facade from "../../ApiFacade";
-import { Fragment, useEffect, useState, useRef } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function AdminWorkout() {
-  const [input, setInput] = useState("");
-  const [muscles, setMuscles] = useState("");
-  const [image, setImage] = useState("");
   const [workouts, setWorkouts] = useState([]);
   const [open, setOpen] = useState(false);
-  const [openArrow, setOpenArrow] = useState(false);
-  const [workoutName, setWorkoutName] = useState({ name: "" });
-  const [openExerciseModal, setOpenExerciseModal] = useState(false);
-  const cancelButtonRef = useRef(null);
-
-  async function handleGeneratePhoto(muscles) {
-    const imageUrl = await facade.generatePhoto(muscles);
-    setImage(imageUrl);
-  }
+  const [workoutName, setWorkoutName] = useState("");
+  const [searchExercises, setSearchExercises] = useState([]);
+  const [searchExercisesInput, setSearchExercisesInput] = useState("");
+  const [selectedExercises, setSelectedExercises] = useState([]);
+  const [selectedExercisesIds, setSelectedExercisesIds] = useState([]);
 
   useEffect(() => {
     facade.fetchWorkouts().then((data) => setWorkouts(data));
   }, []);
 
-  function onChange(e) {
-    setWorkoutName({ ...workoutName, [e.target.id]: e.target.value });
-    console.log(workoutName);
+  useEffect(() => {
+    console.log(selectedExercisesIds);
+  }, [selectedExercisesIds]);
+
+  useEffect(() => {
+    facade.fetchExerciseByName(searchExercisesInput).then((data) => setSearchExercises(data));
+  }, [searchExercisesInput]);
+
+  // opens the slide-in
+  function handleAddWorkout() {
+    setOpen(true);
+    facade.getExercises().then((data) => setSearchExercises(data));
   }
 
-  function onSubmit(event) {
+  function handleWorkoutNameInput(event) {
+    setWorkoutName(event.target.value);
+  }
+
+  function handleSelectExercise(exercise) {
+    // check if selectedExercises array contains exercise id already
+    if (selectedExercises.includes(exercise.id)) {
+      // if it does, remove it from the array
+      setSelectedExercises(selectedExercises.filter((id) => id !== exercise.id));
+    } else {
+      // if it doesn't, add it to the array
+      setSelectedExercises([...selectedExercises, exercise]);
+    }
+
+    // check if selectedExercisesIds array contains exercise id already
+    if (selectedExercisesIds.includes(exercise.id)) {
+      // if it does, remove it from the array
+      setSelectedExercisesIds(selectedExercisesIds.filter((id) => id !== exercise.id));
+    } else {
+      // if it doesn't, add it to the array
+      setSelectedExercisesIds([...selectedExercisesIds, exercise.id]);
+    }
+  }
+
+  function handleSubmit(event) {
     event.preventDefault();
-    facade.createWorkout(workoutName);
+    facade.createWorkout({ name: workoutName, exercisesList: selectedExercises });
     setOpen(false);
+    window.location.reload();
+  }
+
+  function handleSearchExercisesInput(event) {
+    setSearchExercisesInput(event.target.value);
+  }
+
+  function handleDeleteWorkout(id) {
+    facade.deleteWorkout(id);
     window.location.reload();
   }
 
@@ -41,14 +74,14 @@ export default function AdminWorkout() {
     <Fragment>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">workout</h1>
+          <h1 className="text-base font-semibold leading-6 text-gray-900">Workouts</h1>
           <p className="mt-2 text-sm text-gray-700">A list of all the workouts in the database.</p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={() => setOpen(true)}
+            onClick={handleAddWorkout}
           >
             Add workout
           </button>
@@ -71,11 +104,11 @@ export default function AdminWorkout() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {workouts.map((workout) => (
-                    <tr key={workout.name}>
+                    <tr key={workout.id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{workout.name}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <a href="#" className="text-red-600 hover:text-red-900">
-                          Delete workout<span className="sr-only">, {workout.name}</span>
+                        <a onClick={() => handleDeleteWorkout(workout.id)} className="text-red-600 hover:text-red-900 hover:cursor-pointer">
+                          Delete workout
                         </a>
                       </td>
                     </tr>
@@ -115,15 +148,15 @@ export default function AdminWorkout() {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onSubmit={onSubmit}>
+                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
                       <div className="h-0 flex-1 overflow-y-auto">
-                        <div className="bg-indigo-700 px-4 py-6 sm:px-6">
+                        <div className="bg-indigo-600 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
                             <Dialog.Title className="text-base font-semibold leading-6 text-white">New Workout</Dialog.Title>
                             <div className="ml-3 flex h-7 items-center">
                               <button
                                 type="button"
-                                className="rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                                className="rounded-md bg-indigo-600 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
                                 onClick={() => setOpen(false)}
                               >
                                 <span className="sr-only">Close panel</span>
@@ -132,14 +165,14 @@ export default function AdminWorkout() {
                             </div>
                           </div>
                           <div className="mt-1">
-                            <p className="text-sm text-indigo-300">Create a new workout!.</p>
+                            <p className="text-sm text-indigo-300">Fill out the fields below and create a new workout.</p>
                           </div>
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
-                          <div className="divide-y divide-gray-200 px-4 sm:px-6">
+                          <div className="space-y-4 p-4 sm:p-6">
                             <div>
                               <label htmlFor="project-name" className="block text-sm font-medium leading-6 text-gray-900">
-                                Workout Name
+                                Name of workout
                               </label>
                               <div className="mt-2">
                                 <input
@@ -147,19 +180,62 @@ export default function AdminWorkout() {
                                   type="text"
                                   name="project-name"
                                   id="name"
-                                  className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  placeholder="Workout Name"
-                                  onChange={onChange}
+                                  className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  placeholder="e.g. Push day"
+                                  onChange={handleWorkoutNameInput}
                                 />
                               </div>
                             </div>
-                            <button
-                              type="submit"
-                              onClick={() => setOpenExerciseModal(true)}
-                              className="mt-2 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                              Add exercises
-                            </button>
+                            <div>
+                              <label htmlFor="search" className="block text-sm font-medium leading-6 text-gray-900">
+                                Search exercises
+                              </label>
+                              <div className="relative mt-2 flex items-center">
+                                <input
+                                  type="text"
+                                  name="search"
+                                  id="search"
+                                  placeholder="e.g. Bench press"
+                                  onChange={handleSearchExercisesInput}
+                                  className="block w-full rounded-md border-0 py-1.5 px-3 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                              </div>
+                            </div>
+                            <div className="flex flex-col">
+                              <label htmlFor="exercises" className="block text-sm font-medium leading-6 text-gray-900">
+                                Exercises {selectedExercisesIds.length > 0 && `(${selectedExercisesIds.length})`}
+                              </label>
+                              <div className="mt-2">
+                                <ul className="border border-gray-300 rounded-md divide-y divide-gray-300">
+                                  {searchExercises.map((exercise) => (
+                                    <li key={exercise.id} className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                                      <div className="w-0 flex-1 flex items-center">
+                                        <span className="ml-2 flex-1 w-0 truncate">{exercise.name}</span>
+                                      </div>
+                                      <div className="ml-4 flex-shrink-0">
+                                        {selectedExercisesIds.includes(exercise.id) ? (
+                                          <button
+                                            type="button"
+                                            className="rounded-md px-2 py-1 text-sm font-semibold text-white shadow-sm bg-indigo-600 ring-1 ring-indigo-600 hover:bg-indigo-700"
+                                            onClick={() => handleSelectExercise(exercise)}
+                                          >
+                                            <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                                          </button>
+                                        ) : (
+                                          <button
+                                            type="button"
+                                            className="rounded-md px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm bg-white ring-1 ring-gray-300 hover:bg-gray-50"
+                                            onClick={() => handleSelectExercise(exercise)}
+                                          >
+                                            <PlusIcon className="h-4 w-4" aria-hidden="true" />
+                                          </button>
+                                        )}
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -174,6 +250,7 @@ export default function AdminWorkout() {
                         <button
                           type="submit"
                           className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={handleSubmit}
                         >
                           Create workout
                         </button>
@@ -182,92 +259,6 @@ export default function AdminWorkout() {
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
-
-      <div className="flex flex-col gap-4 bg-gray-200 mt-10 w-1/2 p-4">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            onChange={(event) => setMuscles(event.target.value)}
-            className="ring-1 ring-gray-300 ring-inset rounded text-sm px-2 py-1 w-full focus:ring-2 focus:ring-blue-600 focus:outline-none"
-            placeholder="Input muscle groups (seperated by comma)"
-          />
-          <button
-            type="button"
-            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-            onClick={() => handleGeneratePhoto(muscles)}
-          >
-            Generate
-          </button>
-        </div>
-        {image != "" && <img src={image} alt={"something"} className="" />}
-      </div>
-
-      {/* Add exercises modal */}
-      <Transition.Root show={openExerciseModal} as={Fragment}>
-        <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpenExerciseModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-10 overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                  <div>
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                      <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
-                    </div>
-                    <div className="mt-3 text-center sm:mt-5">
-                      <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                        Payment successful
-                      </Dialog.Title>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius aliquam laudantium explicabo pariatur iste dolorem animi vitae error
-                          totam. At sapiente aliquam accusamus facere veritatis.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                      onClick={() => setOpenExerciseModal(false)}
-                    >
-                      Deactivate
-                    </button>
-                    <button
-                      type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                      onClick={() => setOpenExerciseModal(false)}
-                      ref={cancelButtonRef}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
             </div>
           </div>
         </Dialog>

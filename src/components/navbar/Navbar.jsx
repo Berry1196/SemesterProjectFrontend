@@ -28,6 +28,7 @@ export default function Navbar({ username, role }) {
         setNavigation([
           { name: "Dashboard", href: "/", current: location.pathname === "/" },
           { name: "Workouts", href: "/workouts", current: location.pathname === "/workouts" },
+          { name: "Activity", href: "/activity", current: location.pathname === "/activity" },
         ]);
       }
     } else {
