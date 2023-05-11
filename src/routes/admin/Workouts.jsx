@@ -1,44 +1,38 @@
 import facade from "../../ApiFacade";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon, MagnifyingGlassIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function AdminWorkout() {
   const [workouts, setWorkouts] = useState([]);
   const [open, setOpen] = useState(false);
-  const [workoutName, setWorkoutName] = useState({ name: "" });
+  const [workoutName, setWorkoutName] = useState("");
   const [searchExercises, setSearchExercises] = useState([]);
   const [searchExercisesInput, setSearchExercisesInput] = useState("");
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const [selectedExercisesIds, setSelectedExercisesIds] = useState([]);
 
   useEffect(() => {
     facade.fetchWorkouts().then((data) => setWorkouts(data));
   }, []);
 
+  useEffect(() => {
+    console.log(selectedExercisesIds);
+  }, [selectedExercisesIds]);
+
+  useEffect(() => {
+    facade.fetchExerciseByName(searchExercisesInput).then((data) => setSearchExercises(data));
+  }, [searchExercisesInput]);
+
+  // opens the slide-in
   function handleAddWorkout() {
     setOpen(true);
     facade.getExercises().then((data) => setSearchExercises(data));
   }
 
-  function onChange(e) {
-    setWorkoutName({ ...workoutName, [e.target.id]: e.target.value });
-    console.log(workoutName);
+  function handleWorkoutNameInput(event) {
+    setWorkoutName(event.target.value);
   }
-
-  function onSubmit(event) {
-    event.preventDefault();
-    facade.createWorkout(workoutName);
-    setOpen(false);
-    window.location.reload();
-  }
-
-  function handleSearchExercisesInput(event) {
-    setSearchExercisesInput(event.target.value);
-  }
-
-  useEffect(() => {
-    facade.fetchExerciseByName(searchExercisesInput).then((data) => setSearchExercises(data));
-  }, [searchExercisesInput]);
 
   function handleSelectExercise(exercise) {
     // check if selectedExercises array contains exercise id already
@@ -47,8 +41,28 @@ export default function AdminWorkout() {
       setSelectedExercises(selectedExercises.filter((id) => id !== exercise.id));
     } else {
       // if it doesn't, add it to the array
-      setSelectedExercises([...selectedExercises, exercise.id]);
+      setSelectedExercises([...selectedExercises, exercise]);
     }
+
+    // check if selectedExercisesIds array contains exercise id already
+    if (selectedExercisesIds.includes(exercise.id)) {
+      // if it does, remove it from the array
+      setSelectedExercisesIds(selectedExercisesIds.filter((id) => id !== exercise.id));
+    } else {
+      // if it doesn't, add it to the array
+      setSelectedExercisesIds([...selectedExercisesIds, exercise.id]);
+    }
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    facade.createWorkout({ name: workoutName, exercisesList: selectedExercises });
+    setOpen(false);
+    window.location.reload();
+  }
+
+  function handleSearchExercisesInput(event) {
+    setSearchExercisesInput(event.target.value);
   }
 
   function handleDeleteWorkout(id) {
@@ -168,7 +182,7 @@ export default function AdminWorkout() {
                                   id="name"
                                   className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   placeholder="e.g. Push day"
-                                  onChange={onChange}
+                                  onChange={handleWorkoutNameInput}
                                 />
                               </div>
                             </div>
@@ -189,7 +203,7 @@ export default function AdminWorkout() {
                             </div>
                             <div className="flex flex-col">
                               <label htmlFor="exercises" className="block text-sm font-medium leading-6 text-gray-900">
-                                Exercises {selectedExercises.length > 0 && `(${selectedExercises.length})`}
+                                Exercises {selectedExercisesIds.length > 0 && `(${selectedExercisesIds.length})`}
                               </label>
                               <div className="mt-2">
                                 <ul className="border border-gray-300 rounded-md divide-y divide-gray-300">
@@ -199,7 +213,7 @@ export default function AdminWorkout() {
                                         <span className="ml-2 flex-1 w-0 truncate">{exercise.name}</span>
                                       </div>
                                       <div className="ml-4 flex-shrink-0">
-                                        {selectedExercises.includes(exercise.id) ? (
+                                        {selectedExercisesIds.includes(exercise.id) ? (
                                           <button
                                             type="button"
                                             className="rounded-md px-2 py-1 text-sm font-semibold text-white shadow-sm bg-indigo-600 ring-1 ring-indigo-600 hover:bg-indigo-700"
@@ -236,7 +250,7 @@ export default function AdminWorkout() {
                         <button
                           type="submit"
                           className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                          onClick={onSubmit}
+                          onClick={handleSubmit}
                         >
                           Create workout
                         </button>
