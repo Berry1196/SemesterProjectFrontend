@@ -6,16 +6,16 @@ import { useEffect } from "react";
 import facade from "./ApiFacade";
 
 // routes
-import Home from "./routes/Home";
-import CreateUser from "./routes/CreateUser";
-import Login from "./routes/Login";
-import About from "./routes/About";
-import AdminDashboard from "./routes/admin/Dashboard";
-import UserDashboard from "./routes/user/Dashboard";
-import AdminWorkouts from "./routes/admin/Workouts";
-import UserWorkouts from "./routes/user/Workouts";
-import AdminExercises from "./routes/admin/Exercises";
-import Activity from "./routes/user/Activity";
+import Home from "./routes/guest/Home";
+import CreateUser from "./routes/guest/CreateUser";
+import Login from "./routes/guest/Login";
+import About from "./routes/guest/About";
+import AdminDashboard from "./routes/admin/AdminDashboard";
+import UserDashboard from "./routes/user/UserDashboard";
+import AdminWorkouts from "./routes/admin/AdminWorkouts";
+import UserWorkouts from "./routes/user/UserWorkouts";
+import AdminExercises from "./routes/admin/AdminExercises";
+import Activity from "./routes/user/UserActivity";
 
 function App() {
   const [username, setUsername] = useState("");

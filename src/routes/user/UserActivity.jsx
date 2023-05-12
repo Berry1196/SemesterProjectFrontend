@@ -140,6 +140,10 @@ export default function Activity({ username, selectedWorkoutName }) {
     }
   }
 
+  function handleCompleteWorkout() {
+    window.location.href = "/";
+  }
+
   return (
     <Fragment>
       <h1 className="text-center text-2xl font-bold">{activeExercise ? activeExercise.name : null}</h1>
@@ -208,8 +212,12 @@ export default function Activity({ username, selectedWorkoutName }) {
           </button>
         )}
         {workout.exercisesList[workout.exercisesList.length - 1].id === activeExercise.id ? (
-          <button type="button" disabled className="rounded-md px-3 py-2 text-sm font-semibold text-gray-50 bg-gray-50">
-            Next exercise
+          <button
+            type="button"
+            onClick={handleCompleteWorkout}
+            className="rounded-md px-2 py-1 text-sm font-semibold text-white shadow-sm bg-green-500 ring-1 ring-gray-300 hover:bg-green-600 hover:cursor-pointer"
+          >
+            Done
           </button>
         ) : (
           <button

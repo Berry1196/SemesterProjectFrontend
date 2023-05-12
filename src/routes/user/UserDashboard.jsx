@@ -2,13 +2,15 @@ import facade from "../../ApiFacade";
 import { Fragment, useEffect, useState, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
-export default function Dashboard({ username, setActiveWorkout }) {
+export default function Dashboard({ username }) {
   const [workouts, setWorkouts] = useState([]);
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
   const [selectedWorkout, setSelectedWorkout] = useState({});
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [image, setImage] = useState("");
+  const [localStorageWorkout, setLocalStorageWorkout] = useState(JSON.parse(localStorage.getItem("workout")) || {});
+  const [progress, setProgress] = useState(0);
 
   function handleStartWorkout() {
     const sets = [
@@ -21,7 +23,10 @@ export default function Dashboard({ username, setActiveWorkout }) {
     // throw sets into selectedWorkout exercisesList
     selectedWorkout.exercisesList.forEach((exercise) => (exercise.sets = sets));
 
-    localStorage.setItem("workout", JSON.stringify(selectedWorkout));
+    if (selectedWorkout.id !== localStorageWorkout.id) {
+      // set the workout in localStorage
+      localStorage.setItem("workout", JSON.stringify(selectedWorkout));
+    }
     window.location.href = "/activity";
   }
 
@@ -48,6 +53,18 @@ export default function Dashboard({ username, setActiveWorkout }) {
 
   useEffect(() => {
     facade.fetchWorkoutsByUsername(username).then((data) => setWorkouts(data));
+    console.log(localStorageWorkout);
+    // check if localStoage sets are completed
+    console.log(localStorageWorkout.exercisesList.sets);
+    // calculate progress
+    const exercisesList = localStorageWorkout.exercisesList;
+    for (let i = 0; i < exercisesList.length; i++) {
+      for (let j = 0; j < exercisesList[i].sets.length; j++) {
+        if (exercisesList[i].sets[j].completed === true) {
+          setProgress((prevProgress) => prevProgress + 1);
+        }
+      }
+    }
   }, []);
 
   function handleRemoveWorkout(id) {
@@ -62,6 +79,11 @@ export default function Dashboard({ username, setActiveWorkout }) {
           <div key={workout.id} className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">{workout.name}</h3>
+            </div>
+            <div className="w-full bg-gray-200">
+              <div className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none" style={{ width: "45%" }}>
+                {progress}
+              </div>
             </div>
             <div className="border-t border-gray-200">
               <dl>
