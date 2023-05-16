@@ -21,7 +21,7 @@ function apiFacade() {
       username: username,
       password: password,
     });
-    const data = await fetch("https://staudal.org/workout/api/login", options);
+    const data = await fetch("http://localhost:8080/api/login", options);
     const res = await data.json();
     return res;
   }
@@ -29,7 +29,7 @@ function apiFacade() {
   //Create user fucntion
   async function createUser(user) {
     const options = makeOptions("POST", true, user);
-    const data = await fetch("https://staudal.org/workout/api/signup", options);
+    const data = await fetch("http://localhost:8080/api/signup", options);
     const res = await data.json();
     return res;
   }
