@@ -29,7 +29,7 @@ function apiFacade() {
   //Create user fucntion
   async function createUser(user) {
     const options = makeOptions("POST", true, user);
-    const data = await fetch(URL + "signup", options);
+    const data = await fetch("https://staudal.org/workout/api/signup", options);
     const res = await data.json();
     return res;
   }
