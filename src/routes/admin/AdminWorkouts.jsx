@@ -52,7 +52,9 @@ export default function AdminWorkout() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    facade.createWorkout({ name: workoutName, exercisesList: selectedExercises });
+    facade.createWorkout({ name: workoutName, exercisesList: selectedExercises }).then((data) => {
+      setWorkouts([...workouts, data]);
+    });
     setOpen(false);
   }
 
