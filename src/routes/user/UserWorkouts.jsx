@@ -24,7 +24,11 @@ export default function Workouts({ username }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    facade.fetchWorkout(input).then((data) => setWorkouts(data));
+    facade.fetchWorkout(input).then((data) => {
+      // if workouts consists of workouts with the same name, filter them out
+      const filteredWorkouts = data.filter((workout, index, self) => self.findIndex((w) => w.name === workout.name) === index);
+      setWorkouts(filteredWorkouts);
+    });
   }
 
   function handleSelectWorkout(id) {
