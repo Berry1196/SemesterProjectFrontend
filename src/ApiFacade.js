@@ -1,4 +1,4 @@
-const URL = "https://staudal.org/workout/api/"
+const URL = "http://staudal.org/workout/api/"
 
 function apiFacade() {
   const setToken = (token) => {
