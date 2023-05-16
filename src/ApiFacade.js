@@ -115,7 +115,7 @@ function apiFacade() {
 
   async function fetchUserData() {
     const options = makeOptions("GET", true);
-    const data = await fetch(UWEB_URLRL + "info/user", options);
+    const data = await fetch(WEB_URL + "info/user", options);
     return data.json();
   }
   async function fetchData(url) {
