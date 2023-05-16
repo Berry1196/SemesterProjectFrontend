@@ -1,4 +1,4 @@
-const WEB_URL = "https://staudal.org/workout/api/";
+const WEB_URL = "http://localhost:8080/api/";
 
 function apiFacade() {
   const setToken = (token) => {
