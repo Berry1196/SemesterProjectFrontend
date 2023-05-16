@@ -54,7 +54,6 @@ export default function AdminWorkout() {
     event.preventDefault();
     facade.createWorkout({ name: workoutName, exercisesList: selectedExercises });
     setOpen(false);
-    window.location.reload();
   }
 
   function handleSearchExercisesInput(event) {
@@ -63,7 +62,6 @@ export default function AdminWorkout() {
 
   function handleDeleteWorkout(id) {
     facade.deleteWorkout(id);
-    window.location.reload();
   }
 
   return (
