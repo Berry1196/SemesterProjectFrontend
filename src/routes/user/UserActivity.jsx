@@ -1,22 +1,23 @@
 import React, { Fragment, useEffect, useState } from "react";
-import facade from "../../ApiFacade";
 
-export default function Activity({ username, selectedWorkoutName }) {
-  const [workout, setWorkout] = useState(JSON.parse(localStorage.getItem("workout")));
+export default function Activity() {
+  const [workout, setWorkout] = useState(JSON.parse(localStorage.getItem("workout")) || null);
   const [activeExercise, setActiveExercise] = useState({});
   const [sets, setSets] = useState([]);
 
   useEffect(() => {
-    // set the active exercise
-    setActiveExercise(workout.exercisesList[0]);
-
-    // set the sets
-    setSets(workout.exercisesList[0].sets);
+    // sets the active exercise & sets to the first exercise in the workout
+    if (workout !== null) {
+      setActiveExercise(workout.exercisesList[0]);
+      setSets(workout.exercisesList[0].sets);
+    }
   }, []);
 
   useEffect(() => {
-    // update localStorage workout
-    localStorage.setItem("workout", JSON.stringify(workout));
+    if (workout !== null) {
+      // set the workout in localStorage
+      localStorage.setItem("workout", JSON.stringify(workout));
+    }
   }, [workout]);
 
   // controls the selection of sets
@@ -148,7 +149,8 @@ export default function Activity({ username, selectedWorkoutName }) {
     <Fragment>
       <h1 className="text-center text-2xl font-bold">{activeExercise ? activeExercise.name : null}</h1>
       <p className="text-center text-base text-gray-500">
-        {workout.exercisesList.findIndex((exercise) => exercise.id === activeExercise.id) + 1} of {workout.exercisesList.length}
+        {workout ? workout.exercisesList.findIndex((exercise) => exercise.id === activeExercise.id) + 1 : null} of{" "}
+        {workout ? workout.exercisesList.length : null}
       </p>
       <ul className="border border-gray-300 rounded-md divide-y divide-gray-300 mt-10">
         {sets.map((set) => (
@@ -181,7 +183,7 @@ export default function Activity({ username, selectedWorkoutName }) {
         ))}
       </ul>
       <div className="grid grid-cols-3 gap-4 mt-10">
-        {workout.exercisesList[0].id === activeExercise.id ? (
+        {workout && workout.exercisesList[0].id === activeExercise.id ? (
           <button type="button" disabled className="rounded-md px-3 py-2 text-sm font-semibold text-gray-50 bg-gray-50">
             Previous exercise
           </button>
@@ -194,7 +196,7 @@ export default function Activity({ username, selectedWorkoutName }) {
             Previous exercise
           </button>
         )}
-        {sets.every((set) => set.completed === true) ? (
+        {sets && sets.every((set) => set.completed === true) ? (
           <button
             type="button"
             onClick={handleMarkAsComplete}
@@ -211,7 +213,7 @@ export default function Activity({ username, selectedWorkoutName }) {
             Mark as completed
           </button>
         )}
-        {workout.exercisesList[workout.exercisesList.length - 1].id === activeExercise.id ? (
+        {workout && workout.exercisesList[workout.exercisesList.length - 1].id === activeExercise.id ? (
           <button
             type="button"
             onClick={handleCompleteWorkout}
