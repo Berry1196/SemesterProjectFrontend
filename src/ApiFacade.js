@@ -21,7 +21,7 @@ function apiFacade() {
       username: username,
       password: password,
     });
-    const data = await fetch( URL + "login", options);
+    const data = await fetch("https://staudal.org/workout/api/login", options);
     const res = await data.json();
     return res;
   }
