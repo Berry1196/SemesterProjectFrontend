@@ -29,14 +29,16 @@ export default function Exercises() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    facade.createExercise(newExercise);
+    facade.createExercise(newExercise).then((data) => {
+      setExercises([...exercises, data]);
+    });
     setOpen(false);
-    window.location.reload();
   }
 
   function handleDelete(id) {
-    facade.deleteExercise(id);
-    window.location.reload();
+    facade.deleteExercise(id).then(() => {
+      setExercises(exercises.filter((exercise) => exercise.id !== id));
+    });
   }
 
   return (

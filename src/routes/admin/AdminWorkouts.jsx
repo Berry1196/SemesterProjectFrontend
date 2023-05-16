@@ -63,7 +63,9 @@ export default function AdminWorkout() {
   }
 
   function handleDeleteWorkout(id) {
-    facade.deleteWorkout(id);
+    facade.deleteWorkout(id).then(() => {
+      setWorkouts(workouts.filter((workout) => workout.id !== id));
+    });
   }
 
   return (
