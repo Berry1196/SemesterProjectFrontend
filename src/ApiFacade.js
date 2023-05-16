@@ -1,4 +1,4 @@
-const URL = "https://staudal.org/workout/api/";
+const URL = "http://localhost:8080/api/";
 
 function apiFacade() {
   const setToken = (token) => {
@@ -45,7 +45,7 @@ function apiFacade() {
   // Deletes an exercise
   async function deleteExercise(id) {
     const options = makeOptions("DELETE", true);
-    const data = await fetch(URL + "exercises" + id, options);
+    const data = await fetch(URL + "exercises/" + id, options);
     const res = await data.json();
     return res;
   }
@@ -53,7 +53,7 @@ function apiFacade() {
   // Deletes a workout
   async function deleteWorkout(id) {
     const options = makeOptions("DELETE", true);
-    const data = await fetch(URL + "workouts" + id, options);
+    const data = await fetch(URL + "workouts/" + id, options);
     const res = await data.json();
     return res;
   }
@@ -69,7 +69,7 @@ function apiFacade() {
   // add workout to user
   async function linkWorkoutToUser(username, workout) {
     const options = makeOptions("POST", true, workout);
-    const data = await fetch(URL + "workouts" + username, options);
+    const data = await fetch(URL + "workouts/" + username, options);
     const res = await data.json();
     return res;
   }
@@ -77,7 +77,7 @@ function apiFacade() {
   //add exercise to workout by id
   async function linkExerciseToWorkout(id, exercise) {
     const options = makeOptions("POST", true, exercise);
-    const data = await fetch(URL + "workouts/exercises" + id, options);
+    const data = await fetch(URL + "workouts/exercises/" + id, options);
     const res = await data.json();
     return res;
   }
@@ -126,7 +126,7 @@ function apiFacade() {
 
   async function fetchWorkout(muscle) {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "workouts" + muscle, options);
+    const data = await fetch(URL + "workouts/" + muscle, options);
     return data.json();
   }
 
@@ -138,19 +138,19 @@ function apiFacade() {
 
   async function fetchWorkoutsByUsername(username) {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "workouts/user" + username, options);
+    const data = await fetch(URL + "workouts/user/" + username, options);
     return data.json();
   }
 
   async function deleteWorkoutFromUser(username, id) {
     const options = makeOptions("DELETE", true);
-    const data = await fetch(URL + "workouts/user" + username + "/" + id, options);
+    const data = await fetch(URL + "workouts/user/" + username + "/" + id, options);
     return data.json();
   }
 
   async function fetchExerciseByName(name) {
     const options = makeOptions("GET", true);
-    const data = await fetch(URL + "exercises" + name, options);
+    const data = await fetch(URL + "exercises/" + name, options);
     return data.json();
   }
 

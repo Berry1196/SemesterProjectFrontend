@@ -17,10 +17,6 @@ export default function AdminWorkout() {
   }, []);
 
   useEffect(() => {
-    console.log(selectedExercisesIds);
-  }, [selectedExercisesIds]);
-
-  useEffect(() => {
     facade.fetchExerciseByName(searchExercisesInput).then((data) => setSearchExercises(data));
   }, [searchExercisesInput]);
 
