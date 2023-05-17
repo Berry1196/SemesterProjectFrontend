@@ -16,6 +16,7 @@ import AdminWorkouts from "./routes/admin/AdminWorkouts";
 import UserWorkouts from "./routes/user/UserWorkouts";
 import AdminExercises from "./routes/admin/AdminExercises";
 import Activity from "./routes/user/UserActivity";
+import PageNotFound from "./routes/guest/PageNotFound";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -59,6 +60,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateUser />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Layout>
     </Fragment>
