@@ -69,10 +69,12 @@ export default function Workouts({ username }) {
   return (
     <Fragment>
       <form>
-        <input onChange={handleChange} className="px-3 py-2 border rounded w-full" placeholder="Search by muscle group" />
-        <button type="submit" className="btn bg-indigo-600 text-white px-3 py-2 rounded" onClick={handleSubmit}>
-          Search
-        </button>
+        <div className="flex gap-2">
+          <input onChange={handleChange} className="px-3 py-2 border rounded w-full" placeholder="Search by muscle group" />
+          <button type="submit" className="btn bg-indigo-600 text-white px-3 py-2 rounded" onClick={handleSubmit}>
+            Search
+          </button>
+        </div>
       </form>
 
       {workouts.length === 0 && (
